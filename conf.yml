@@ -1,0 +1,48 @@
+#Noms à ne pas donner aux flux: MULTI_SOURCES
+---
+in:
+  - 
+    nom: a
+    type: FILE
+#    filtreSQL:
+    #si select est vide ou absent on prend toutes les colonnes
+#      all: SELECT * FROM a WHERE visit.visitor_id = "d2cf6994-74a0-c267-6d35-e1c9f4b2e8b8"
+  - 
+    nom: b
+    type: FILE
+  - 
+    nom: a2
+    type: FILE
+  - 
+    nom: b2
+    type: FILE
+  -
+    nom: b3
+    type: FILE
+#    filtreSQL:
+#      all: SELECT page FROM a WHERE session.referrer.domain = "www.open-source-guide.com"
+out:
+  - 
+    nom: c
+    type: FILE
+    from:
+      - a
+      - b
+  - 
+    nom: d
+    type: FILE
+    from:
+      - a2
+      - b2
+operations:
+#  -
+#    nom_source: a
+#    operations:
+#      - append session.referrer.domain session.referrer.page domainPlusPage
+      #append [colonne1] [colonne2] [colonneCree]
+  -
+    nom_source: b
+  -
+    nom_source: a2
+    operations_multi_sources:
+      - join a2 b3 test3 test4
