@@ -36,4 +36,29 @@ public class Processors {
 		else
 			return null;
 	}
+
+	public Dataset<Row> stringToDate(Dataset<Row> df, String commande) {
+
+		String[] str = commande.split(" ");
+
+		return df.withColumn(str[2], functions.from_utc_timestamp(df.col(str[1]), "+01:00"));
+
+	}
+
+	public Dataset<Row> split(Dataset<Row> df, String commande) {
+
+		String[] str = commande.split(" ");
+
+		return df.withColumn(str[2], functions.split(df.col(str[1]), str[3]));
+	}
+
+	public Dataset<Row> aggregate(Dataset<Row> df, String commande) {
+		/*
+		 * val sessionUrlsDf = spark.
+		 * sql("select session.session_id, url, count(*) as rating from cleanedUrlFbPageviewDf where session.session_id is not null group by session.session_id, url order by session_id, rating desc"
+		 * )
+		 */
+		return null;
+	}
+
 }

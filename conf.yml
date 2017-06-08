@@ -1,4 +1,3 @@
-#Noms à ne pas donner aux flux: MULTI_SOURCES
 ---
 in:
   - 
@@ -41,8 +40,15 @@ operations:
 #      - append session.referrer.domain session.referrer.page domainPlusPage
       #append [colonne1] [colonne2] [colonneCree]
   -
-    nom_source: b
-  -
-    nom_source: a2
-    operations_multi_sources:
-      - join a2 b3 test3 test4
+    nom_source: a
+    operations:
+      - append page.site page.url url
+      - append session.referrer.domain session.referrer.page referrer_url
+      - stringToDate page.date timestamp
+      - split page.product product_list \|
+      - split page.product_category product_category_list \|
+      - split page.language language_list \|
+#  -
+#    nom_source: a2
+#    operations_multi_sources:
+#      - join a2 b3 test3 test4

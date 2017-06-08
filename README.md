@@ -33,8 +33,10 @@ Le champs operations possède :
 Liste des opérations existantes :
 
 | Type opération | Nom de l'opération | Paramètres | Notes |
-| -------------- | :----------------: | ---------- | ----- |
-| OPERATIONS | append | [colonne1][colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
+| :------------: | :----------------: | ---------- | ----- |
+| OPERATIONS | append | [colonne1] [colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
+| OPERATIONS | stringToDate | [colonneBase] [nouvelleColonne] | On applique un + "+00:01" au temps |
+| OPERATIONS | split | [colonne1] [colonne2] [séparateur] | Attention pour certains caractères comme "\|" il est nécessaire de mettre un  "\" avant |
 | OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | Si les deux colonne ont le même nom, n'indiquer que le champ [colonne1]
 
 **Note :** Il est possible d'appeler plusieurs fois la même opération sur le même flux.
@@ -121,3 +123,4 @@ Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de
 ## Le post-do
 Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
 Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#les-sorties "Format de sortie" )).
+

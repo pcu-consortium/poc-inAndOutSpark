@@ -164,7 +164,6 @@ public class Main {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 
 	/**
@@ -238,7 +237,6 @@ public class Main {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 
 	/**
@@ -366,8 +364,6 @@ public class Main {
 			log.warn("postDo - Unsuccessful");
 			e.printStackTrace();
 		}
-
 		return 0;
 	}
-
 }
