@@ -52,8 +52,48 @@ Chaque sortie possède :
 
 **Note :** Dans le cas de sortie sous format fichier, une arborescence est crée avec au premier niveau un dossier par sortie puis pour chaque dossier, un sous-dossier par flux d'entrées.
 
+## Exemple fichier de conf
+
+```
+---
+in:
+  - 
+    nom: a
+    type: FILE
+    filtreSQL:
+      all: SELECT * FROM a WHERE col1 = "text"
+  - 
+    nom: b
+    type: FILE
+out:
+  - 
+    nom: c
+    type: FILE
+    from:
+      - a
+      - b
+  - 
+    nom: d
+    type: FILE
+    from:
+      - b
+operations:
+  -
+    nom_source: b
+    operations:
+      - append col1 col2
+  -
+    nom_source: a
+    operations_multi_sources:
+      - join a b col5 col3
+```
+
 # Composition des fichiers d'entrées et de sortie
-Les fichiers d'entrée doivent être composés d'objets JSON (1 objet JSON par ligne)
+
+Les fichiers d'entrée doivent se situer à la racine du projet.
+
+Ils doivent être composés d'objets JSON (1 objet JSON par ligne)
+
 Exemple :
 ``` 
 {"test1":"test1.1", "test2":"test2.1", "test3":"test3.1"}
