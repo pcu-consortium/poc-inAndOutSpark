@@ -16,6 +16,7 @@ Chaque entrée possède :
 | FACULTATIF | filtreSQL | Requete SQL simple à effectuer sur le flux d'entrée |
 | DEPRECATED | select | Effectue un select sur le flux |
 | DEPRECATED | where | Effectue un where sur le flux |
+
 **Note :** Si les champs select ou where sont renseignés, le champ filtreSQL n'est pas pris en compte. 
 
 ## Les opérations
@@ -35,6 +36,7 @@ Liste des opérations existantes :
 | ------ | ------ | ------ | ------ |
 | OPERATIONS | append | [colonne1][colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
 | OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | Si les deux colonne ont le même nom, n'indiquer que le champ [colonne1]
+
 **Note :** Il est possible d'appeler plusieurs fois la même opération sur le même flux.
 
 ## Les sorties
@@ -47,6 +49,7 @@ Chaque sortie possède :
 | OBLIGATOIRE | nom | Nom du flux de sortie. Donnera le nom du dossier crée avec les résultats |
 | OBLIGATOIRE | type | type du flux de sortie (fichier ou kafka). Pour le moment on ne prend en compte que les fichiers |
 | FACULTATIF | from | Liste des flux à faire ressortir par cette sortie. Le nom du flux donnera le nom du sous-dossier dans lequel seront les résultats pour ce flux |
+
 **Note :** Dans le cas de sortie sous format fichier, une arborescence est crée avec au premier niveau un dossier par sortie puis pour chaque dossier, un sous-dossier par flux d'entrées.
 
 # Composition des fichiers d'entrées et de sortie
@@ -77,4 +80,4 @@ Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de
 
 # Le post-do
 Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
-Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie](https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#Les_sorties "Format de sortie" ).
+Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#les-sorties "Format de sortie" )).
