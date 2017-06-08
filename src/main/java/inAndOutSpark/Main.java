@@ -82,9 +82,6 @@ public class Main {
 
 			ss = SparkSession.builder().getOrCreate();
 
-			// l.setLevel(Level.INFO);
-			log.warn("CECI EST UN TEST C'EST SUPER RIGOLO");
-
 			log.warn("Initialisation - Successful");
 		} catch (Exception e) {
 			log.warn("Initialisation - Unsuccessful");
