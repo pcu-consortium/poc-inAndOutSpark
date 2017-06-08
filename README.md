@@ -10,7 +10,7 @@ Le champs entrées est à mettre au niveau 0 du fichire de conf avec pour nom "i
 Chaque entrée possède :
 
 | Statut | Nom du champ | Description |
-| ------ | ------------ | ----------- |
+| :----: | :----------: | ----------- |
 | OBLIGATOIRE | nom | Le nom du flux, à réutiliser dans le reste du fichier de configuration
 | OBLIGATOIRE | type | type du flux d'entrée (fichier ou kafka) pour le moment n'est pas pris en compte et on lit uniquement des fichiers |
 | FACULTATIF | filtreSQL | Requete SQL simple à effectuer sur le flux d'entrée |
@@ -25,7 +25,7 @@ Le champs opérations est à mettre au niveau 0 du fichire de conf avec pour nom
 Le champs operations possède :
 
 | Statut | Nom du champ | Description |
-| ------ | ------ | ------ |
+| :----: | :----------: | ----------- |
 | OBLIGATOIRE | nom_source | Le nom de la source sur laquelle effectuer l'opération (réutiliser le nom déclaré dans l'entrée)
 | FACULTATIF | operations | La liste d'opérations à effectuer sur le flux source
 | FACULTATIF | operations_multi_sources | La liste d'opérations à affectuer sur le flux source nécessitant les données de plusieurs sources
@@ -33,7 +33,7 @@ Le champs operations possède :
 Liste des opérations existantes :
 
 | Type opération | Nom de l'opération | Paramètres | Notes |
-| ------ | ------ | ------ | ------ |
+| -------------- | :----------------: | ---------- | ----- |
 | OPERATIONS | append | [colonne1][colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
 | OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | Si les deux colonne ont le même nom, n'indiquer que le champ [colonne1]
 
@@ -45,7 +45,7 @@ Le champs sorties est à mettre au niveau 0 du fichire de conf avec pour nom "ou
 Chaque sortie possède :
 
 | Statut | Nom du champ | Description |
-| ------ | ------ | ------ |
+| :----: | :----------: | ----------- |
 | OBLIGATOIRE | nom | Nom du flux de sortie. Donnera le nom du dossier crée avec les résultats |
 | OBLIGATOIRE | type | type du flux de sortie (fichier ou kafka). Pour le moment on ne prend en compte que les fichiers |
 | FACULTATIF | from | Liste des flux à faire ressortir par cette sortie. Le nom du flux donnera le nom du sous-dossier dans lequel seront les résultats pour ce flux |
