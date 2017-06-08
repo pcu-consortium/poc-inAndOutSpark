@@ -44,3 +44,34 @@ Chaque sortie possède :
 | OBLIGATOIRE | type | type du flux de sortie (fichier ou kafka). Pour le moment on ne prend en compte que les fichiers |
 | FACULTATIF | from | Liste des flux à faire ressortir par cette sortie. Le nom du flux donnera le nom du sous-dossier dans lequel seront les résultats pour ce flux |
 **Note :** Dans le cas de sortie sous format fichier, une arborescence est crée avec au premier niveau un dossier par sortie puis pour chaque dossier, un sous-dossier par flux d'entrées.
+
+# Composition des fichiers d'entrées et de sortie
+Les fichiers d'entrée doivent être composés d'objets JSON (1 objet JSON par ligne)
+Exemple :
+``` 
+{"test1":"test1.1", "test2":"test2.1", "test3":"test3.1"}
+{"test1":"test1.2", "test2":"test2.2", "test3":"test3.2"}
+{"test1":"test1.3", "test2":"test2.3", "test3":"test3.3"}
+```
+Les fichiers de sorties seront écrit sous le même format
+
+# Détails sur le code
+
+Le code est séparé en 3 parties distinctes.
+
+## Le pré-do
+Le pré-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
+Le pré-do se charge de :
+- L'initialisation des variables spark utilisées de manière globale
+- La lecture du ficher de configuration et de sa transformation en objet java
+- La lecture des données indiquées dans le fichier de configuration
+- Application de(s/la) requête(s) SQL si indiquée(s) dans le fichier de configuration
+
+## Le do
+Cette partie est totalement libre de modification par l'utilisateur
+Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de configuration.
+
+# Le post-do
+Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
+Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie](https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#Les_sorties "Format de sortie").
+
