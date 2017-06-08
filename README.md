@@ -8,8 +8,9 @@
 Le champs entrées est à mettre au niveau 0 du fichire de conf avec pour nom "in" et est composé d'une liste d'entrées.
 
 Chaque entrée possède :
+
 | Statut | Nom du champ | Description |
-| ------ | ------ | ------ |
+| ------ | ------------ | ----------- |
 | OBLIGATOIRE | nom | Le nom du flux, à réutiliser dans le reste du fichier de configuration
 | OBLIGATOIRE | type | type du flux d'entrée (fichier ou kafka) pour le moment n'est pas pris en compte et on lit uniquement des fichiers |
 | FACULTATIF | filtreSQL | Requete SQL simple à effectuer sur le flux d'entrée |
@@ -21,6 +22,7 @@ Chaque entrée possède :
 Le champs opérations est à mettre au niveau 0 du fichire de conf avec pour nom "operations" et est composé d'une liste d'opérations et une autre d'opérations multi-sources.
 
 Le champs operations possède :
+
 | Statut | Nom du champ | Description |
 | ------ | ------ | ------ |
 | OBLIGATOIRE | nom_source | Le nom de la source sur laquelle effectuer l'opération (réutiliser le nom déclaré dans l'entrée)
@@ -28,6 +30,7 @@ Le champs operations possède :
 | FACULTATIF | operations_multi_sources | La liste d'opérations à affectuer sur le flux source nécessitant les données de plusieurs sources
 
 Liste des opérations existantes :
+
 | Type opération | Nom de l'opération | Paramètres | Notes |
 | ------ | ------ | ------ | ------ |
 | OPERATIONS | append | [colonne1][colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
@@ -38,6 +41,7 @@ Liste des opérations existantes :
 Le champs sorties est à mettre au niveau 0 du fichire de conf avec pour nom "out" et est composé d'une liste de sorties.
 
 Chaque sortie possède :
+
 | Statut | Nom du champ | Description |
 | ------ | ------ | ------ |
 | OBLIGATOIRE | nom | Nom du flux de sortie. Donnera le nom du dossier crée avec les résultats |
@@ -73,5 +77,4 @@ Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de
 
 # Le post-do
 Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
-Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie](https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#Les_sorties "Format de sortie").
-
+Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie](https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#Les_sorties "Format de sortie" ).
