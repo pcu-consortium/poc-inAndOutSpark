@@ -78,6 +78,6 @@ Le pré-do se charge de :
 Cette partie est totalement libre de modification par l'utilisateur
 Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de configuration.
 
-# Le post-do
+## Le post-do
 Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
 Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#les-sorties "Format de sortie" )).
