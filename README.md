@@ -105,66 +105,67 @@ The results are in the files part-00000-xxx.json and should be :
 ```
  
 
-# Composition fichier de configuration
+# Composition of the configuration file
 
-   Le fichier de configuration est séparé en 3 parties principales :
-   
-   - Les entrées : Le champ "in"
-   - Les opérations : Le champs "operations"
-   - Les sorties : Le champ "out"
+The configuration file is split in 3 main parts :
 
-## Les entrées
-Le champs entrées est à mettre au niveau 0 du fichire de conf avec pour nom "in" et est composé d'une liste d'entrées.
+- The entries : The field "in"
+- The operations : The field "operations"
+- The outputs : The field "out"
 
-Chaque entrée possède :
+## The entries
 
-| Statut | Nom du champ | Description |
+The entries field has to be at the level 0 of the configuration file with the label "in" and is composed by a list of entries.
+
+Each entries has :
+
+| Status | Field name | Description |
 | :----: | :----------: | ----------- |
-| OBLIGATOIRE | nom | Le nom du flux, à réutiliser dans le reste du fichier de configuration
-| OBLIGATOIRE | type | type du flux d'entrée (fichier ou kafka) pour le moment n'est pas pris en compte et on lit uniquement des fichiers |
-| FACULTATIF | filtreSQL | Requete SQL simple à effectuer sur le flux d'entrée |
-| DEPRECATED | select | Effectue un select sur le flux |
-| DEPRECATED | where | Effectue un where sur le flux |
+| REQUIRED | nom | Name of the flow, to be reused in the rest of the file
+| REQUIRED | type | type of the flow (file or kafka) for the moment is not taken into account, we only read files |
+| OPTIONAL | filtreSQL | Simple SQL request to execute on the flow |
+| DEPRECATED | select | Execute a select on the flow |
+| DEPRECATED | where | Execute a where on the flow |
 
-**Note :** Si les champs select ou where sont renseignés, le champ filtreSQL n'est pas pris en compte. 
+**Note :** If the field "select" or "where" are specified, the field "filtreSQL" is not taken into account.
 
-## Les opérations
-Le champs opérations est à mettre au niveau 0 du fichire de conf avec pour nom "operations" et est composé d'une liste d'opérations et une autre d'opérations multi-sources.
+## The operations
+The operation field has to be at the level 0 of the configuration file with the label "operations" and is composed from a list of operations and a list of multi-sources operations
 
-Le champs operations possède :
+The field operations has :
 
-| Statut | Nom du champ | Description |
+| Status | Field name | Description |
 | :----: | :----------: | ----------- |
-| OBLIGATOIRE | nom_source | Le nom de la source sur laquelle effectuer l'opération (réutiliser le nom déclaré dans l'entrée)
-| FACULTATIF | operations | La liste d'opérations à effectuer sur le flux source
-| FACULTATIF | operations_multi_sources | La liste d'opérations à affectuer sur le flux source nécessitant les données de plusieurs sources
+| REQUIRED | nom_source | The name of the source upon which we execute the operation (reuse the name declared in the "in") |
+| OPTIONAL | operations | The list of operations to execute on the flow |
+| OPTIONAL | operations_multi_sources | The list of operations to execute on the flow which need data from other sources |
 
-Liste des opérations existantes :
+List of existing operations:
 
 | Type opération | Nom de l'opération | Paramètres | Notes |
 | :------------: | :----------------: | ---------- | ----- |
-| OPERATIONS | append | [colonne1] [colonne2] [nouvelleColonne] | Le champ nouvelleColonne est facultatif et a pour valeur par défaut : colonne1-colonne2 |
-| OPERATIONS | stringToDate | [colonneBase] [nouvelleColonne] | On applique un + "+00:01" au temps |
-| OPERATIONS | split | [colonne1] [colonne2] [séparateur] | Attention pour certains caractères comme "\|" il est nécessaire de mettre un  "\" avant |
-| OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | Si les deux colonne ont le même nom, n'indiquer que le champ [colonne1]
+| OPERATIONS | append | [colonne1] [colonne2] [nouvelleColonne] | The field nouvelleColonne is not mandatory and has as default vallue : coloumn1-column2 |
+| OPERATIONS | stringToDate | [colonneBase] [nouvelleColonne] | We do a "+00:01" to the time |
+| OPERATIONS | split | [colonne1] [colonne2] [séparateur] | Warning : For a few characters as "|" it is necessary to put a "\" before |
+| OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | If the two columns have the same name, only state the field [colonne1] |
 
-**Note :** Il est possible d'appeler plusieurs fois la même opération sur le même flux.
+**Note :** It is possible to call the same operation multiple times on the same flow.
 
-## Les sorties
+## The output
 
-Le champs sorties est à mettre au niveau 0 du fichire de conf avec pour nom "out" et est composé d'une liste de sorties.
+The output field has to be at the level 0 of the configuration field and is composed of an output list
 
-Chaque sortie possède :
+Each output possess :
 
-| Statut | Nom du champ | Description |
+| Status | Field name | Description |
 | :----: | :----------: | ----------- |
-| OBLIGATOIRE | nom | Nom du flux de sortie. Donnera le nom du dossier crée avec les résultats |
-| OBLIGATOIRE | type | type du flux de sortie (fichier ou kafka). Pour le moment on ne prend en compte que les fichiers |
-| FACULTATIF | from | Liste des flux à faire ressortir par cette sortie. Le nom du flux donnera le nom du sous-dossier dans lequel seront les résultats pour ce flux |
+| REQUIRED | nom | Name of the ouput flow. Give its name to the folder with the output data |
+| REQUIRED | type | Type of the output flow (kafka or file). For the moment only file is supported |
+| OPTIONAL | from | List of flow that have to be written on this output. The elements of the list give their names to the sub-folder with the output data in |
 
-**Note :** Dans le cas de sortie sous format fichier, une arborescence est crée avec au premier niveau un dossier par sortie puis pour chaque dossier, un sous-dossier par flux d'entrées.
+**Note :** For an example output, see : [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )
 
-## Exemple fichier de conf
+## Example configuration file
 
 ```
 ---
@@ -200,39 +201,43 @@ operations:
       - join a b col5 col3
 ```
 
-# Composition des fichiers d'entrées et de sortie
+# Format of input/output file
 
-Les fichiers d'entrée doivent se situer à la racine du projet.
+The input and output files have the same format. So you can have multiple jobs working one after another without interruptions on the way. They are composed of JSON objects (one JSON object by line)
+The input files have to be at the root of the project.
 
 Ils doivent être composés d'objets JSON (1 objet JSON par ligne)
 
-Exemple :
+Example :
 ``` 
 {"test1":"test1.1", "test2":"test2.1", "test3":"test3.1"}
 {"test1":"test1.2", "test2":"test2.2", "test3":"test3.2"}
 {"test1":"test1.3", "test2":"test2.3", "test3":"test3.3"}
+...
 ```
-Les fichiers de sorties seront écrit sous le même format
 
-# Détails sur le code
+# Details about the code
 
-Le code est séparé en 3 parties distinctes.
+The code is separated in 3 main partgs.
 
-## Le pré-do
+## The pre-do
 
-Le pré-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
-Le pré-do se charge de :
+The pre-do should **not** be touched by the user.
+Its job is to :
 
-- L'initialisation des variables spark utilisées de manière globale
-- La lecture du ficher de configuration et de sa transformation en objet java
-- La lecture des données indiquées dans le fichier de configuration
-- Application de(s/la) requête(s) SQL si indiquée(s) dans le fichier de configuration
+- Initialize the spark variables globaly used in the code
+- Readin of the configuration file and its transformation into java object
+- Read the data indicated in the configuration file
+- Execution of the SQL request(s) indicated in the configuration file
 
-## Le do
-Cette partie est totalement libre de modification par l'utilisateur
-Le do (encore non-décomposé) applique les filtres indiqués dans le fichier de configuration.
+## The do
 
-## Le post-do
-Le post-do ne doit normalement **pas** être modifié par l'utilisateur et laissé tel que.
-Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (voir [format de sortie]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#les-sorties "Format de sortie" )).
+This part is totally editable by the user except the part where we execute the different operations
+The do (not yet exploded in sub-functions) execute the operations indicated in the configurtion file.
+
+## The post-do
+
+The post-do should **not** be touched by the user.
+The post-do's job is to write the results in function of the indications given in the configuration file 
+Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (see [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )).
 
