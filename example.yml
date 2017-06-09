@@ -1,34 +1,34 @@
 ---
 in:
   - 
-    nom: a-example
+    nom: aExample
     type: FILE
     filtreSQL:
-      all: SELECT * FROM a-example WHERE test2 = test2.1
+      all: SELECT * FROM aExample WHERE test2 = "test2.1"
   - 
-    nom: b-example
+    nom: bExample
     type: FILE
-    filtreSQl:
-      all: SELECT test3, test4, test5 FROM b-example
+    filtreSQL:
+      all: SELECT test3, test4, test5 FROM bExample
 out:
   - 
-    nom: c-example
+    nom: cExample
     type: FILE
     from:
-      - a-example
-      - b-example
+      - aExample
+      - bExample
   - 
-    nom: d-example
+    nom: dExample
     type: FILE
     from:
-      - b-example
+      - aExample
 operations:
   -
-    nom_source: a-example
+    nom_source: aExample
     operations:
-      - append test1 test2 result
-      - split test8 \|
+      - append test1 test2 resultAppend
+      - split test8 resultSplit \|
   -
-    nom_source: 
+    nom_source: aExample
     operations_multi_sources:
-      - join b-example a-example test3
+      - join aExample bExample test3

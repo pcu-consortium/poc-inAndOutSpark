@@ -110,7 +110,7 @@ public class Main {
 			 * System.exit(1); }
 			 */
 
-			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("conf.yml");
+			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("example.yml");
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -262,7 +262,9 @@ public class Main {
 
 			// pour chaque source
 			for (int i = 0; i < conf.getOperations().size(); i++) {
-				entrees.get(conf.getOperations().get(i).getNom_source()).show(50, false);
+				log.warn("On en est là " + i);
+				// entrees.get(conf.getOperations().get(i).getNom_source()).show(50,
+				// false);
 				// pour chaque opération par source
 				for (int j = 0; j < conf.getOperations().get(i).getOperations().size(); j++) {
 					// on sauvegarde le nom de la source sur laquelle on
@@ -346,9 +348,10 @@ public class Main {
 
 		try {
 			Configuration conf = Bc.getValue();
-
+			log.warn("Liste des elements");
 			for (Sortie sor : conf.getOut()) {
 				for (String str : sor.getFrom()) {
+					entrees.get(str).show();
 					entrees.get(str).write().json(sor.getNom() + "/" + str);
 				}
 			}
