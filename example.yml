@@ -1,0 +1,34 @@
+---
+in:
+  - 
+    nom: a-example
+    type: FILE
+    filtreSQL:
+      all: SELECT * FROM a-example WHERE test2 = test2.1
+  - 
+    nom: b-example
+    type: FILE
+    filtreSQl:
+      all: SELECT test3, test4, test5 FROM b-example
+out:
+  - 
+    nom: c-example
+    type: FILE
+    from:
+      - a-example
+      - b-example
+  - 
+    nom: d-example
+    type: FILE
+    from:
+      - b-example
+operations:
+  -
+    nom_source: a-example
+    operations:
+      - append test1 test2 result
+      - split test8 \|
+  -
+    nom_source: 
+    operations_multi_sources:
+      - join b-example a-example test3

@@ -76,7 +76,7 @@ public class Main {
 	public static void init(String[] args) {
 
 		try {
-			sparkConf = new SparkConf().setAppName("Word Count Demo").setMaster("local");
+			sparkConf = new SparkConf().setAppName("inAndOutSpark").setMaster("local");
 
 			jsc = new JavaSparkContext(sparkConf);
 
