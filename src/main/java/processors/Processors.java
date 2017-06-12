@@ -119,19 +119,24 @@ public class Processors {
 		Dataset<Row> predictions = model.transform(ldf[1]);
 		predictions.show(10, false);
 
+		// Nettoyage des prédictions
 		Dataset<Row> cleaned_predictions = predictions.na().drop();
 
+		// Création de l'evaluateur
 		RegressionEvaluator evaluator = new RegressionEvaluator().setMetricName("rmse").setLabelCol("rating")
 				.setPredictionCol("prediction");
 
+		// Evaluation
 		double rmse = evaluator.evaluate(cleaned_predictions);
 
 		log.warn("RMSE : " + rmse);
 
+		// Je sais pas trop à quoi ça sert
 		cleaned_predictions.selectExpr("session_id", "url", "rating", "prediction",
 				"rating - prediction residual_error", " (rating - prediction) / " + rmse + " within_rmse")
 				.createOrReplaceTempView("rmseEvaluation");
 
+		// Affichage des RMSE, normalement ça indique des trucs
 		ss.sql("select * from rmseEvaluation").show(3);
 		log.warn("within 1 rmse (should be > 68%) :"
 				+ (100 * ss.sql("select * from rmseEvaluation where abs(within_rmse) < 1").count()
