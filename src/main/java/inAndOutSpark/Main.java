@@ -110,7 +110,7 @@ public class Main {
 			 * System.exit(1); }
 			 */
 
-			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("example.yml");
+			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("conf.yml");
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -262,7 +262,6 @@ public class Main {
 
 			// pour chaque source
 			for (int i = 0; i < conf.getOperations().size(); i++) {
-				log.warn("On en est là " + i);
 				// entrees.get(conf.getOperations().get(i).getNom_source()).show(50,
 				// false);
 				// pour chaque opération par source
@@ -276,10 +275,10 @@ public class Main {
 					// on récupère le nom du processor à effectuer (premier
 					// élement du string)
 					method = p.getClass().getMethod(conf.getOperations().get(i).getOperations().get(j).split(" ")[0],
-							Dataset.class, String.class);
+							Dataset.class, String.class, Logger.class);
 					// on récupère le nouveau dataset
 					Dataset<Row> newDF = (Dataset<Row>) method.invoke(p, entrees.get(backUp),
-							conf.getOperations().get(i).getOperations().get(j));
+							conf.getOperations().get(i).getOperations().get(j), log);
 					// on enleve l'ancien
 					entrees.remove(backUp);
 					// on ajoute le nouveau
@@ -294,10 +293,10 @@ public class Main {
 					// élement du string)
 					method = p.getClass().getMethod(
 							conf.getOperations().get(i).getOperations_multi_sources().get(j).split(" ")[0],
-							HashMap.class, String.class);
+							HashMap.class, String.class, Logger.class);
 					// on récupère le nouveau dataset
 					Dataset<Row> newDF = (Dataset<Row>) method.invoke(p, entrees,
-							conf.getOperations().get(i).getOperations_multi_sources().get(j));
+							conf.getOperations().get(i).getOperations_multi_sources().get(j), log);
 					// on enleve l'ancien
 					entrees.remove(backUp);
 					// on ajoute le nouveau
@@ -348,7 +347,6 @@ public class Main {
 
 		try {
 			Configuration conf = Bc.getValue();
-			log.warn("Liste des elements");
 			for (Sortie sor : conf.getOut()) {
 				for (String str : sor.getFrom()) {
 					entrees.get(str).show();

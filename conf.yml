@@ -1,7 +1,7 @@
 ---
 in:
   - 
-    nom: a
+    nom: a3
     type: FILE
 #    filtreSQL:
     #si select est vide ou absent on prend toutes les colonnes
@@ -9,15 +9,15 @@ in:
   - 
     nom: b
     type: FILE
-  - 
-    nom: a2
-    type: FILE
-  - 
-    nom: b2
-    type: FILE
-  -
-    nom: b3
-    type: FILE
+#  - 
+#    nom: a2
+#    type: FILE
+#  - 
+#    nom: b2
+#    type: FILE
+#  -
+#    nom: b3
+#    type: FILE
 #    filtreSQL:
 #      all: SELECT page FROM a WHERE session.referrer.domain = "www.open-source-guide.com"
 out:
@@ -25,14 +25,14 @@ out:
     nom: c
     type: FILE
     from:
-      - a
+      - a3
       - b
-  - 
-    nom: d
-    type: FILE
-    from:
-      - a2
-      - b2
+#  - 
+#    nom: d
+#    type: FILE
+#    from:
+#      - a2
+#      - b2
 operations:
 #  -
 #    nom_source: a
@@ -40,7 +40,7 @@ operations:
 #      - append session.referrer.domain session.referrer.page domainPlusPage
       #append [colonne1] [colonne2] [colonneCree]
   -
-    nom_source: a
+    nom_source: a3
     operations:
       - append page.site page.url url
       - append session.referrer.domain session.referrer.page referrer_url
@@ -48,6 +48,7 @@ operations:
       - split page.product product_list \|
       - split page.product_category product_category_list \|
       - split page.language language_list \|
+      - collaborativeFiltering
 #  -
 #    nom_source: a2
 #    operations_multi_sources:
