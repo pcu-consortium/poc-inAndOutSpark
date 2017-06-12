@@ -122,7 +122,7 @@ Each entries has :
 | Status | Field name | Description |
 | :----: | :----------: | ----------- |
 | REQUIRED | nom | Name of the flow, to be reused in the rest of the file
-| REQUIRED | type | type of the flow (file or kafka) for the moment is not taken into account, we only read files |
+| REQUIRED | type | type of the flow (file, whole folder or kafka) for the moment only files or folder are readable |
 | OPTIONAL | filtreSQL | Simple SQL request to execute on the flow |
 | DEPRECATED | select | Execute a select on the flow |
 | DEPRECATED | where | Execute a where on the flow |
@@ -147,6 +147,7 @@ List of existing operations:
 | OPERATIONS | append | [colonne1] [colonne2] [nouvelleColonne] | The field nouvelleColonne is not mandatory and has as default vallue : coloumn1-column2 |
 | OPERATIONS | stringToDate | [colonneBase] [nouvelleColonne] | We do a "+00:01" to the time |
 | OPERATIONS | split | [colonne1] [colonne2] [séparateur] | Warning : For a few characters as "|" it is necessary to put a "\" before |
+| OPERATIONS | collaborativeFiltering | / | Apply the ML algorithm on the source (the data is not preserved
 | OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | If the two columns have the same name, only state the field [colonne1] |
 
 **Note :** It is possible to call the same operation multiple times on the same flow.
@@ -241,3 +242,8 @@ The post-do should **not** be touched by the user.
 The post-do's job is to write the results in function of the indications given in the configuration file 
 Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (see [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )).
 
+## The to-do
+
+- Things
+- Other things
+- More things

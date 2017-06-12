@@ -23,6 +23,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import config.Configuration;
 import config.Sortie;
+import config.TypeConnexion;
 import processors.Processors;
 
 /**
@@ -145,7 +146,11 @@ public class Main {
 
 			// Remplissage des dataframes
 			for (int i = 0; i < conf.getIn().size(); i++) {
-				dfs.put(conf.getIn().get(i).getNom(), ss.read().json(conf.getIn().get(i).getNom()));
+				if (conf.getIn().get(i).getType().equals(TypeConnexion.FOLDER))
+					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(conf.getIn().get(i).getNom() + "/*"));
+				else
+					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(conf.getIn().get(i).getNom()));
+
 			}
 
 			// Affichage des dataframe et de leur schéma
@@ -164,6 +169,11 @@ public class Main {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Dataset<Row> readFolder(String folder) {
+
+		return null;
 	}
 
 	/**

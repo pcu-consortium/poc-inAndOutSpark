@@ -7,5 +7,5 @@ package config;
  *
  */
 public enum TypeConnexion {
-	KAFKA, FILE, OTHER
+	KAFKA, FILE, OTHER, FOLDER
 }
