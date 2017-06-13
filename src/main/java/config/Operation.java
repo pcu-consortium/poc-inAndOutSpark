@@ -12,55 +12,62 @@ import java.util.List;
  */
 public class Operation implements Serializable {
 
-	String nom_source;
-	List<String> operations;
-	List<String> operations_multi_sources;
+	String input_source;
+	List<String> processors;
+	String output_source;
 
 	/**
 	 * @return
 	 */
-	public String getNom_source() {
-		return nom_source;
+	public String getInput_source() {
+		return input_source;
 	}
 
 	/**
 	 * @param nom_source
 	 */
-	public void setNom_source(String nom_source) {
-		this.nom_source = nom_source;
+	public void setInput_source(String input_source) {
+		this.input_source = input_source;
+		if (output_source == "")
+			this.output_source = this.input_source;
 	}
 
 	/**
 	 * @return
 	 */
-	public List<String> getOperations() {
-		return operations;
+	public List<String> getProcessors() {
+		return processors;
 	}
 
 	/**
 	 * @param operations
 	 */
-	public void setOperations(List<String> operations) {
-		this.operations = operations;
+	public void setProcessors(List<String> processors) {
+		this.processors = processors;
 	}
 
-	public List<String> getOperations_multi_sources() {
-		return operations_multi_sources;
+	public String getOutput_source() {
+		return output_source;
 	}
 
-	public void setOperations_multi_sources(List<String> operations_multi_sources) {
-		this.operations_multi_sources = operations_multi_sources;
+	public void setOutput_source(String output_source) {
+		this.output_source = output_source;
+	}
+
+	public boolean isOutputSameAsInput() {
+
+		return this.input_source == this.output_source;
 	}
 
 	/**
 	 * @param nom_source
 	 * @param operations
 	 */
-	public Operation(String nom_source, List<String> operations, List<String> operations_multi_sources) {
+	public Operation(String Input_source, List<String> processors, String output_source) {
 		super();
-		this.nom_source = nom_source;
-		this.operations = operations;
-		this.operations_multi_sources = operations_multi_sources;
+		this.input_source = Input_source;
+		this.processors = processors;
+		this.output_source = output_source;
 	}
 
 	/**
@@ -68,14 +75,14 @@ public class Operation implements Serializable {
 	 */
 	public Operation() {
 		super();
-		nom_source = "";
-		operations = new ArrayList<String>();
-		operations_multi_sources = new ArrayList<String>();
+		input_source = "";
+		processors = new ArrayList<String>();
+		output_source = "";
 	}
 
 	@Override
 	public String toString() {
-		return nom_source + " " + operations;
+		return input_source + " " + processors;
 	}
 
 }

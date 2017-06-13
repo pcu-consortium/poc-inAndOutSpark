@@ -53,8 +53,8 @@ public class MainTest extends SharedJavaSparkContext {
 		List<String> ope2 = new ArrayList<String>();
 		ope2.add("ope4");
 		ope2.add("ope5");
-		ope.add(new Operation("a", ope1, new ArrayList<String>()));
-		ope.add(new Operation("b", ope2, new ArrayList<String>()));
+		// ope.add(new Operation("a", ope1, new ArrayList<String>()));
+		// ope.add(new Operation("b", ope2, new ArrayList<String>()));
 
 		return new Configuration(in, out, ope);
 

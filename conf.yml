@@ -1,7 +1,7 @@
 ---
 in:
   - 
-    nom: a3
+    nom: sourcesPCU
     type: FILE
 #    filtreSQL:
     #si select est vide ou absent on prend toutes les colonnes
@@ -25,7 +25,7 @@ out:
     nom: c
     type: FILE
     from:
-      - a3
+      - result
       - b
 #  - 
 #    nom: d
@@ -40,16 +40,24 @@ operations:
 #      - append session.referrer.domain session.referrer.page domainPlusPage
       #append [colonne1] [colonne2] [colonneCree]
   -
-    nom_source: a3
-    operations:
+    input_source: sourcesPCU
+    processors:
+#cleanup
       - append page.site page.url url
+
+#valorisation
+#      - collaborativeFiltering
+    output_source: result
+  -
+    input_source: result
+    processors:
       - append session.referrer.domain session.referrer.page referrer_url
       - stringToDate page.date timestamp
+#enrichement    
       - split page.product product_list \|
       - split page.product_category product_category_list \|
       - split page.language language_list \|
-      - collaborativeFiltering
 #  -
 #    nom_source: a2
-#    operations_multi_sources:
-#      - join a2 b3 test3 test4
+#    processors:
+#      - multi_sources join a2 b3 test3 test4

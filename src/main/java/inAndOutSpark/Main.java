@@ -171,11 +171,6 @@ public class Main {
 		}
 	}
 
-	public static Dataset<Row> readFolder(String folder) {
-
-		return null;
-	}
-
 	/**
 	 * Fonction appelant les sous-parties du pré-Do A ne pas modifier par
 	 * l'utilisateur
@@ -272,73 +267,36 @@ public class Main {
 
 			// pour chaque source
 			for (int i = 0; i < conf.getOperations().size(); i++) {
-				// entrees.get(conf.getOperations().get(i).getNom_source()).show(50,
-				// false);
-				// pour chaque opération par source
-				for (int j = 0; j < conf.getOperations().get(i).getOperations().size(); j++) {
-					// on sauvegarde le nom de la source sur laquelle on
-					// travaille
-					// (la clé de la map)
-					String backUp = conf.getOperations().get(i).getNom_source();
-					// Si on ne fait pas des opérations sur plusieurs sources
+				// pour chaque processeur
+				for (int j = 0; j < conf.getOperations().get(i).getProcessors().size(); j++) {
 
-					// on récupère le nom du processor à effectuer (premier
-					// élement du string)
-					method = p.getClass().getMethod(conf.getOperations().get(i).getOperations().get(j).split(" ")[0],
-							Dataset.class, String.class, Logger.class);
-					// on récupère le nouveau dataset
-					Dataset<Row> newDF = (Dataset<Row>) method.invoke(p, entrees.get(backUp),
-							conf.getOperations().get(i).getOperations().get(j), log);
-					// on enleve l'ancien
-					entrees.remove(backUp);
-					// on ajoute le nouveau
-					entrees.put(backUp, newDF);
+					Dataset<Row> newDF;
+
+					// Si c'est un processeur multi_sources
+					if (conf.getOperations().get(i).getProcessors().get(j).startsWith("multi_sources")) {
+						// on récupère le nouveau dataset
+						newDF = executeProcessorsMultiSources(entrees, i, j);
+					}
+					// Si on est sur une opération mono source
+					else {
+						// on récupère le nouveau dataset
+						newDF = executeProcessorsMonoSource(entrees, i, j);
+					}
+
+					// Si les input/output sont indentiques on remplace les
+					// données
+					if (conf.getOperations().get(i).isOutputSameAsInput()) {
+						log.warn("Normalement on passe par ici" + i + " " + j);
+						entrees.remove(conf.getOperations().get(i).getInput_source());
+						entrees.put(conf.getOperations().get(i).getInput_source(), newDF);
+					}
+					// Sinon on crée un nouvel output
+					else {
+						entrees.put(conf.getOperations().get(i).getOutput_source(), newDF);
+					}
+					entrees.get(conf.getOperations().get(i).getInput_source()).show(50, false);
 				}
-				// pour chaque opération multi sources par sources
-				for (int j = 0; j < conf.getOperations().get(i).getOperations_multi_sources().size(); j++) {
-					String backUp = conf.getOperations().get(i).getNom_source();
-					// Si on ne fait pas des opérations sur plusieurs sources
-
-					// on récupère le nom du processor à effectuer (premier
-					// élement du string)
-					method = p.getClass().getMethod(
-							conf.getOperations().get(i).getOperations_multi_sources().get(j).split(" ")[0],
-							HashMap.class, String.class, Logger.class);
-					// on récupère le nouveau dataset
-					Dataset<Row> newDF = (Dataset<Row>) method.invoke(p, entrees,
-							conf.getOperations().get(i).getOperations_multi_sources().get(j), log);
-					// on enleve l'ancien
-					entrees.remove(backUp);
-					// on ajoute le nouveau
-					entrees.put(backUp, newDF);
-				}
-
-				entrees.get(conf.getOperations().get(i).getNom_source()).show(50, false);
 			}
-
-			// reflexion pour appeler les opérations
-			/*
-			 * try { conf.getClass().getMethod(conf.getOperations().get(0).
-			 * getOperations() .get(0)); method =
-			 * t.getClass().getMethod(conf.getOperations().get(0).getOperations(
-			 * ). get(0)); } catch (Exception e) { e.printStackTrace(); } try {
-			 * 
-			 * // System.out.println(method.invoke(t)); } catch
-			 * (IllegalAccessException | IllegalArgumentException |
-			 * InvocationTargetException e) { e.printStackTrace(); }
-			 */
-
-			// for(int j = 0; j < conf.getoutFiles().size(); j++)
-			// entrees.get(j).saveAsTextFile(conf.getoutFiles().get(j));
-
-			/*
-			 * JavaRDD<String> textFile = jsc.textFile("loremipsum.txt");
-			 * 
-			 * JavaPairRDD<String, Integer> counts = textFile .flatMap(s ->
-			 * Arrays.asList(s.split(" ")).iterator()) .mapToPair(word -> new
-			 * Tuple2<>(word, 1)) .reduceByKey((a, b) -> a + b);
-			 * counts.saveAsTextFile("test");.
-			 */
 			log.warn("Do - Successful");
 			return entrees;
 		} catch (Exception e) {
@@ -346,6 +304,48 @@ public class Main {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * Function that detect the processor needed, execute it and send the result
+	 * back
+	 * 
+	 * @param Hdf
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	public static Dataset<Row> executeProcessorsMultiSources(HashMap<String, Dataset<Row>> Hdf, int i, int j) {
+
+		try {
+			Configuration conf = Bc.getValue();
+			Processors p = new Processors();
+			Method method = p.getClass().getMethod(conf.getOperations().get(i).getProcessors().get(j).split(" ")[0],
+					HashMap.class, String.class, Logger.class);
+			// on récupère le nouveau dataset
+			return (Dataset<Row>) method.invoke(p, Hdf, conf.getOperations().get(i).getProcessors().get(j), log);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public static Dataset<Row> executeProcessorsMonoSource(HashMap<String, Dataset<Row>> Hdf, int i, int j) {
+
+		try {
+			Configuration conf = Bc.getValue();
+			Processors p = new Processors();
+			Method method = p.getClass().getMethod(conf.getOperations().get(i).getProcessors().get(j).split(" ")[0],
+					Dataset.class, String.class, Logger.class);
+			// on récupère le nouveau dataset
+			return (Dataset<Row>) method.invoke(p, Hdf.get(conf.getOperations().get(i).getInput_source()),
+					conf.getOperations().get(i).getProcessors().get(j), log);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	/**
@@ -359,17 +359,12 @@ public class Main {
 			Configuration conf = Bc.getValue();
 			for (Sortie sor : conf.getOut()) {
 				for (String str : sor.getFrom()) {
+					log.warn(str);
 					entrees.get(str).show();
 					entrees.get(str).write().json(sor.getNom() + "/" + str);
 				}
 			}
 
-			/*
-			 * for (Entry<String, Dataset<Row>> entry : entrees.entrySet()) {
-			 * entry.getValue().write().json("output-" + entry.getKey());
-			 * 
-			 * }
-			 */
 			log.warn("postDo - Successful");
 		} catch (Exception e) {
 			log.warn("postDo - Unsuccessful");
