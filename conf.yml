@@ -43,8 +43,6 @@ operations:
     input_source: sourcesPCU
     processors:
 #cleanup
-      - append page.site page.url url
-
 #valorisation
 #      - collaborativeFiltering
     output_source: result

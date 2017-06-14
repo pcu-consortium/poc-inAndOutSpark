@@ -51,14 +51,11 @@ out:
       - aExample
 operations:
   -
-    nom_source: aExample
-    operations:
+    input_source: aExample
+    processors:
       - append test1 test2 resultAppend
       - split test8 resultSplit \|
-  -
-    nom_source: aExample
-    operations_multi_sources:
-      - join aExample bExample test3
+      - multi_sources join aExample bExample test3
 ```
 ### Explanations
 
@@ -130,27 +127,30 @@ Each entries has :
 **Note :** If the field "select" or "where" are specified, the field "filtreSQL" is not taken into account.
 
 ## The operations
-The operation field has to be at the level 0 of the configuration file with the label "operations" and is composed from a list of operations and a list of multi-sources operations
+The operation field has to be at the level 0 of the configuration file with the label "operations" and is composed from a list of operations, each composed of the name of the flow to modify, a list of processors and an optional name of the output flow.
 
 The field operations has :
 
 | Status | Field name | Description |
 | :----: | :----------: | ----------- |
-| REQUIRED | nom_source | The name of the source upon which we execute the operation (reuse the name declared in the "in") |
-| OPTIONAL | operations | The list of operations to execute on the flow |
-| OPTIONAL | operations_multi_sources | The list of operations to execute on the flow which need data from other sources |
+| REQUIRED | input_source | The name of the source upon which we execute the operation (reuse the name declared in the "in") |
+| OPTIONAL | processors | The list of operations to execute on the flow |
+| OPTIONAL | output_source | The name of the flow where we deliver the results |
 
 List of existing operations:
 
 | Type opération | Nom de l'opération | Paramètres | Notes |
 | :------------: | :----------------: | ---------- | ----- |
-| OPERATIONS | append | [colonne1] [colonne2] [nouvelleColonne] | The field nouvelleColonne is not mandatory and has as default vallue : coloumn1-column2 |
-| OPERATIONS | stringToDate | [colonneBase] [nouvelleColonne] | We do a "+00:01" to the time |
-| OPERATIONS | split | [colonne1] [colonne2] [séparateur] | Warning : For a few characters as "|" it is necessary to put a "\" before |
-| OPERATIONS | collaborativeFiltering | / | Apply the ML algorithm on the source (the data is not preserved
-| OPERATIONS_MULTI_SOURCES | join | [flux1] [flux2] [colonne1] [colonne2] | If the two columns have the same name, only state the field [colonne1] |
+| OPERATIONS | append | [column1] [column2] [newColumn] | The field nouvelleColonne is not mandatory and has as default vallue : column1-column2 |
+| OPERATIONS | stringToDate | [oldColumn] [newColumn] | We do a "+00:01" to the time |
+| OPERATIONS | split | [column1] [column2] [separator] | Warning : For a few characters as '\|' it is necessary to put a "\" before |
+| OPERATIONS | collaborativeFiltering | / | Apply the ML algorithm on the source (the data is not preserved |
+| OPERATIONS | drop | [column] | Drop the column
+| OPERATIONS_MULTI_SOURCES | join | [flow1] [flow2] [column1] [column2] | If the two columns have the same name, only state the field [column1] |
 
-**Note :** It is possible to call the same operation multiple times on the same flow.
+**Note :** For the OPERATIONS_MULTI_SOURCES, it is necessary to write `multi_sources` as the first element of the line, like : `- multi_sources join aExample bExample test3`.
+**Note2 :** It is possible to call the same operation multiple times on the same flow.
+**Note3 :** It is possible to have more than one operation with the same input_source.
 
 ## The output
 
@@ -247,3 +247,4 @@ Le post-do se charge d'écrire les résultats en fonction des indications donné
 - Things
 - Other things
 - More things
+

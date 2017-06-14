@@ -24,11 +24,8 @@ out:
       - aExample
 operations:
   -
-    nom_source: aExample
-    operations:
+    input_source: aExample
+    processors:
       - append test1 test2 resultAppend
       - split test8 resultSplit \|
-  -
-    nom_source: aExample
-    operations_multi_sources:
-      - join aExample bExample test3
+      - multi_sources join aExample bExample test3

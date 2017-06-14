@@ -38,11 +38,11 @@ public class Processors {
 
 		String[] str = commande.split(" ");
 
-		if (str.length == 4)
-			return Hdf.get(str[1]).join(Hdf.get(str[2]), str[3]);
-		else if (str.length == 5)
-			return Hdf.get(str[1]).join(Hdf.get(str[2]),
-					Hdf.get(str[1]).col(str[3]).equalTo(Hdf.get(str[2]).col(str[4])));
+		if (str.length == 5)
+			return Hdf.get(str[2]).join(Hdf.get(str[3]), str[4]);
+		else if (str.length == 6)
+			return Hdf.get(str[2]).join(Hdf.get(str[3]),
+					Hdf.get(str[2]).col(str[4]).equalTo(Hdf.get(str[3]).col(str[5])));
 		else
 			return null;
 	}
@@ -60,6 +60,13 @@ public class Processors {
 		String[] str = commande.split(" ");
 
 		return df.withColumn(str[2], functions.split(df.col(str[1]), str[3]));
+	}
+
+	public Dataset<Row> drop(Dataset<Row> df, String commande, Logger log) {
+
+		String[] str = commande.split(" ");
+
+		return df.drop(str[3]);
 	}
 
 	public Dataset<Row> aggregate(Dataset<Row> df, String commande, Logger log) {

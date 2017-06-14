@@ -111,7 +111,7 @@ public class Main {
 			 * System.exit(1); }
 			 */
 
-			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("conf.yml");
+			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("example.yml");
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -320,7 +320,7 @@ public class Main {
 		try {
 			Configuration conf = Bc.getValue();
 			Processors p = new Processors();
-			Method method = p.getClass().getMethod(conf.getOperations().get(i).getProcessors().get(j).split(" ")[0],
+			Method method = p.getClass().getMethod(conf.getOperations().get(i).getProcessors().get(j).split(" ")[1],
 					HashMap.class, String.class, Logger.class);
 			// on récupère le nouveau dataset
 			return (Dataset<Row>) method.invoke(p, Hdf, conf.getOperations().get(i).getProcessors().get(j), log);
