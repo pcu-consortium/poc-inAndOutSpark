@@ -43,6 +43,9 @@ public class Main {
 	static SparkSession ss = null;
 	static LogManager logManager = new LogManager();
 	static Logger log = LogManager.getRootLogger();
+	static String inputFolder = "";
+	static String outputFolder = "";
+	static String confFile = "";
 
 	/**
 	 * Méthode principale. Appelle les différentes étapes
@@ -105,13 +108,53 @@ public class Main {
 			// Décommenter afin de demander le fichier de conf (pour le moment
 			// on
 			// file le fichier de conf en dur)
-			/*
-			 * if (args.length < 1) {
-			 * System.err.println("Usage: JavaWordCount <file>");
-			 * System.exit(1); }
-			 */
+			JavaPairRDD<String, String> conf;
 
-			JavaPairRDD<String, String> conf = jsc.wholeTextFiles("example.yml");
+			if (args.length < 3) {
+				log.warn("Not enough parameters");
+				log.warn("USAGE : [Configuration file] [Input Folder] [Output Folder]");
+			} else {
+				confFile = args[0];
+				inputFolder = args[1];
+				outputFolder = args[2];
+			}
+
+			// log.warn("Output folder set by default to where the program is
+			// executed");
+			// if (args.length == 0) {
+			// log.warn("Configuration file set by default to where the program
+			// is executed");
+			// log.warn("Input folder set by default to where the program is
+			// executed");
+			// log.warn("Output folder set by default to where the program is
+			// executed");
+			// } else if (args.length == 1) {
+			// log.warn("Configuration file set to " + args[0]);
+			// log.warn("Input folder set by default to where the program is
+			// executed");
+			// log.warn("Output folder set by default to where the program is
+			// executed");
+			// } else if (args.length == 2) {
+			// log.warn("Configuration file set to " + args[0]);
+			// log.warn("Input folder set to" + args[1]);
+			// log.warn("Output folder set by default to where the program is
+			// executed");
+			// } else if (args.length == 3) {
+			// log.warn("Configuration file set to " + args[0]);
+			// log.warn("Input folder set to" + args[1]);
+			// log.warn("Output folder to" + args[2]);
+			// } else {
+			// log.error("Too many arguments -- EXIT");
+			// return;
+			// }
+
+			log.warn("ca passe alez");
+			conf = jsc.wholeTextFiles(confFile);
+			log.warn(conf.first());
+			log.warn("c'est passe tranquille");
+
+			// JavaPairRDD<String, String> conf =
+			// jsc.wholeTextFiles("src/main/resources/example.yml");
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -147,9 +190,10 @@ public class Main {
 			// Remplissage des dataframes
 			for (int i = 0; i < conf.getIn().size(); i++) {
 				if (conf.getIn().get(i).getType().equals(TypeConnexion.FOLDER))
-					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(conf.getIn().get(i).getNom() + "/*"));
+					dfs.put(conf.getIn().get(i).getNom(),
+							ss.read().json(inputFolder + conf.getIn().get(i).getNom() + "/*"));
 				else
-					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(conf.getIn().get(i).getNom()));
+					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(inputFolder + conf.getIn().get(i).getNom()));
 
 			}
 
@@ -361,7 +405,7 @@ public class Main {
 				for (String str : sor.getFrom()) {
 					log.warn(str);
 					entrees.get(str).show();
-					entrees.get(str).write().json(sor.getNom() + "/" + str);
+					entrees.get(str).write().json(outputFolder + sor.getNom() + "/" + str);
 				}
 			}
 

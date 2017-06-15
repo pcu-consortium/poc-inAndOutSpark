@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
 import config.Entree;
 import config.Filtre;
 import config.Format;
@@ -18,7 +16,7 @@ public class ConnexionTest {
 	/**
 	 * Ne teste pas le all de la requete sql
 	 */
-	@Test
+	// @Test
 	public void isThereASQLRequestTest() {
 
 		Entree e = new Entree();
@@ -48,7 +46,7 @@ public class ConnexionTest {
 	/**
 	 * Ne teste pas le all de la requete sql
 	 */
-	@Test
+	// @Test
 	public void getRequeteSQLTest() {
 
 		// Création des string utiles pour les tests

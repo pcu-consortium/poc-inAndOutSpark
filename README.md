@@ -1,10 +1,16 @@
 # Quickstart
 
-## How to run the example
+## How to run the example (Eclipse)
 - Clone the project
 - Import it in eclipse
-- In the file inAndOutSpark.Main.java, at the line 113 replace "conf.yml" by "example.yml"
+- Run > Run Configuration > Arguments > [configuration file] [path to input folder] [path to output folder] 
 - Run the Main.java class
+
+## How to run the example (spark-submit)
+- Clone the project
+- Create an executable jar from the code : `mvn clean compile assembly:single`
+- Move to your spark folder
+- Run  the jar file with the command  `./bin/spark-submit --class inAndOutSpark.Main --master local /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
 
 ## Incoming data
 
