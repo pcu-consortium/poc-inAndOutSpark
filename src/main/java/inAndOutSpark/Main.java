@@ -119,42 +119,7 @@ public class Main {
 				outputFolder = args[2];
 			}
 
-			// log.warn("Output folder set by default to where the program is
-			// executed");
-			// if (args.length == 0) {
-			// log.warn("Configuration file set by default to where the program
-			// is executed");
-			// log.warn("Input folder set by default to where the program is
-			// executed");
-			// log.warn("Output folder set by default to where the program is
-			// executed");
-			// } else if (args.length == 1) {
-			// log.warn("Configuration file set to " + args[0]);
-			// log.warn("Input folder set by default to where the program is
-			// executed");
-			// log.warn("Output folder set by default to where the program is
-			// executed");
-			// } else if (args.length == 2) {
-			// log.warn("Configuration file set to " + args[0]);
-			// log.warn("Input folder set to" + args[1]);
-			// log.warn("Output folder set by default to where the program is
-			// executed");
-			// } else if (args.length == 3) {
-			// log.warn("Configuration file set to " + args[0]);
-			// log.warn("Input folder set to" + args[1]);
-			// log.warn("Output folder to" + args[2]);
-			// } else {
-			// log.error("Too many arguments -- EXIT");
-			// return;
-			// }
-
-			log.warn("ca passe alez");
 			conf = jsc.wholeTextFiles(confFile);
-			log.warn(conf.first());
-			log.warn("c'est passe tranquille");
-
-			// JavaPairRDD<String, String> conf =
-			// jsc.wholeTextFiles("src/main/resources/example.yml");
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

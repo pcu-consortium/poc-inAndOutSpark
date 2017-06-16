@@ -2,6 +2,10 @@
 .settings
 target
 
+#outputfiles
+cExample
+dExample
+
 # Compiled class file
 *.class
 
