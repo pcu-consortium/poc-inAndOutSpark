@@ -175,7 +175,9 @@ List of existing operations:
 | OPERATIONS_MULTI_SOURCES | join | [flow1] [flow2] [column1] [column2] | If the two columns have the same name, only state the field [column1] |
 
 **Note :** For the OPERATIONS_MULTI_SOURCES, it is necessary to write `multi_sources` as the first element of the line, like : `- multi_sources join aExample bExample test3`.
+
 **Note2 :** It is possible to call the same operation multiple times on the same flow.
+
 **Note3 :** It is possible to have more than one operation with the same input_source.
 
 ## The output
