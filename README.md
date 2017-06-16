@@ -1,16 +1,34 @@
 # Quickstart
 
-## How to run the example (Eclipse)
+## How to run the example
+
+### Eclipse (local or on cluster)
+
 - Clone the project
 - Import it in eclipse
-- Run > Run Configuration > Arguments > [configuration file] [path to input folder] [path to output folder] 
+- Run > Run Configuration > Arguments > "`[configuration file] [path to input folder] [path to output folder][local|spark server adress]`"
 - Run the Main.java class
 
-## How to run the example (spark-submit)
+### Local spark-submit
+
 - Clone the project
 - Create an executable jar from the code : `mvn clean compile assembly:single`
 - Move to your spark folder
-- Run  the jar file with the command  `./bin/spark-submit --class inAndOutSpark.Main --master local /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
+- Send  the jar file with the command  `./bin/spark-submit --class inAndOutSpark.Main --master local /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
+
+### Cluster spark-submit
+
+- Clone the project
+- Create an executable jar from the code : `mvn clean compile assembly:single`
+- Move to your spark folder
+- Start the master `./sbin/start-master.sh`
+- Start the worker `./sbin/start-slave.sh`
+- Send the jar with this command `./bin/spark-submit --class inAndOutSpark.Main --master spark://SparkIP:6066 --deploy-mode cluster --supervise /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
+
+**Note :** It is also possible to use `spark://SparkIP:7077`
+**Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job)
+**Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080
+
 
 ## Incoming data
 

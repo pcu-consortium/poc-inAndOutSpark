@@ -80,7 +80,12 @@ public class Main {
 	public static void init(String[] args) {
 
 		try {
-			sparkConf = new SparkConf().setAppName("inAndOutSpark").setMaster("local");
+			// si on execute depuis eclipse
+			if (args.length == 4)
+				sparkConf = new SparkConf().setAppName("inAndOutSpark").setMaster(args[3]);
+			// si on execute en spark-submit
+			else
+				sparkConf = new SparkConf().setAppName("inAndOutSpark");
 
 			jsc = new JavaSparkContext(sparkConf);
 
