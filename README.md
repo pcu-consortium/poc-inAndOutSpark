@@ -25,9 +25,11 @@
 - Start the worker `./sbin/start-slave.sh`
 - Send the jar with this command `./bin/spark-submit --class inAndOutSpark.Main --master spark://SparkIP:6066 --deploy-mode cluster --supervise /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
 
-**Note :** It is also possible to use `spark://SparkIP:7077`
-**Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job)
-**Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080
+**Note :** It is also possible to use `spark://SparkIP:7077`.
+
+**Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job).
+
+**Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080 .
 
 
 ## Incoming data
