@@ -11,6 +11,7 @@ public abstract class Connexion implements Serializable {
 	String nom;
 	TypeConnexion type;
 	Format format;
+	String ipBrokers;
 
 	/**
 	 * @return
@@ -55,6 +56,14 @@ public abstract class Connexion implements Serializable {
 		this.format = format;
 	}
 
+	public String getIpBrokers() {
+		return ipBrokers;
+	}
+
+	public void setIpBrokers(String ipBrokers) {
+		this.ipBrokers = ipBrokers;
+	}
+
 	/**
 	 * Constructeur avec tous les champs de connexion
 	 * 
@@ -63,11 +72,12 @@ public abstract class Connexion implements Serializable {
 	 * @param format
 	 * @param filtreSQL
 	 */
-	public Connexion(String nom, TypeConnexion type, Format format, Filtre filtreSQL) {
+	public Connexion(String nom, TypeConnexion type, Format format, Filtre filtreSQL, String ipbrokers) {
 		super();
 		this.nom = nom;
 		this.type = type;
 		this.format = format;
+		this.ipBrokers = ipbrokers;
 	}
 
 	/**
@@ -78,6 +88,7 @@ public abstract class Connexion implements Serializable {
 		nom = "";
 		type = TypeConnexion.OTHER;
 		format = Format.JSON;
+		ipBrokers = "";
 	}
 
 	@Override

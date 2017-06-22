@@ -11,7 +11,8 @@ in:
     type: FILE
 #  - 
 #    nom: a2
-#    type: FILE
+#    type: KAFKA
+#    ipBrokers: localhost:9093, localhost:9094
 #  - 
 #    nom: b2
 #    type: FILE
@@ -29,10 +30,18 @@ out:
       - b
 #  - 
 #    nom: d
-#    type: FILE
+#    type: ELASTICSEARCH
+#    index: sparkElastic
 #    from:
 #      - a2
-#      - b2
+#  - 
+#    nom: e
+#    type: KAFKA
+#    ipBrokers: localhost:9093
+#    from:
+#      - a2
+
+
 operations:
 #  -
 #    nom_source: a

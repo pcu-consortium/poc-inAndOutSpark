@@ -15,7 +15,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
-import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -30,8 +29,6 @@ import config.Format;
 import config.Operation;
 import config.Sortie;
 import config.TypeConnexion;
-import misc.Misc;
-import misc.NiveauxLogs;
 
 public class MainTest extends SharedJavaSparkContext {
 
@@ -43,8 +40,10 @@ public class MainTest extends SharedJavaSparkContext {
 		in.add(new Entree("a", TypeConnexion.FILE, Format.JSON, f1));
 		in.add(new Entree("b", TypeConnexion.FILE, Format.JSON, f2));
 		List<Sortie> out = new ArrayList<Sortie>();
-		out.add(new Sortie("c", TypeConnexion.FILE, Format.JSON, new ArrayList<String>()));
-		out.add(new Sortie("d", TypeConnexion.FILE, Format.JSON, new ArrayList<String>()));
+		// out.add(new Sortie("c", TypeConnexion.FILE, Format.JSON, new
+		// ArrayList<String>()));
+		// out.add(new Sortie("d", TypeConnexion.FILE, Format.JSON, new
+		// ArrayList<String>()));
 		List<Operation> ope = new ArrayList<Operation>();
 		List<String> ope1 = new ArrayList<String>();
 		ope1.add("ope1");
@@ -171,12 +170,4 @@ public class MainTest extends SharedJavaSparkContext {
 
 		System.out.println(c.toString());
 	}
-
-	@Test
-	public void testLogs() {
-
-		System.out.println(Misc.writeLog(NiveauxLogs.INFO, "Ceci est un test"));
-
-	}
-
 }
