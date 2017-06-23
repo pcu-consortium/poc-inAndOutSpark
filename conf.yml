@@ -1,21 +1,25 @@
 ---
 in:
-  - 
-    nom: sourcesPCU
-    type: FILE
+#  - 
+#   nom: sourcesPCU
+#    type: KAFKA
+#    ipBrokers: localhost:9092
+#    topic: topic2
 #    filtreSQL:
     #si select est vide ou absent on prend toutes les colonnes
 #      all: SELECT * FROM a WHERE visit.visitor_id = "d2cf6994-74a0-c267-6d35-e1c9f4b2e8b8"
-  - 
-    nom: b
-    type: FILE
+#  - 
+#    nom: b
+#    type: KAFKA
+#    ipBrokers: localhost:9092
+#    topic: topic1    
 #  - 
 #    nom: a2
 #    type: KAFKA
 #    ipBrokers: localhost:9093, localhost:9094
-#  - 
-#    nom: b2
-#    type: FILE
+  - 
+    nom: b2
+    type: FILE
 #  -
 #    nom: b3
 #    type: FILE
@@ -26,8 +30,8 @@ out:
     nom: c
     type: FILE
     from:
-      - result
-      - b
+#      - result
+      - b2
 #  - 
 #    nom: d
 #    type: ELASTICSEARCH
@@ -42,28 +46,29 @@ out:
 #      - a2
 
 
-operations:
+#operations:
 #  -
 #    nom_source: a
 #    operations:
 #      - append session.referrer.domain session.referrer.page domainPlusPage
       #append [colonne1] [colonne2] [colonneCree]
-  -
-    input_source: sourcesPCU
-    processors:
+#  -
+#    input_source: sourcesPCU
+#    processors:
 #cleanup
+ #     - append page.site page.url url
 #valorisation
-#      - collaborativeFiltering
-    output_source: result
-  -
-    input_source: result
-    processors:
-      - append session.referrer.domain session.referrer.page referrer_url
-      - stringToDate page.date timestamp
+#     - collaborativeFiltering
+#   output_source: result
+#  -
+#    input_source: result
+#    processors:
+#      - append session.referrer.domain session.referrer.page referrer_url
+#      - stringToDate page.date timestamp
 #enrichement    
-      - split page.product product_list \|
-      - split page.product_category product_category_list \|
-      - split page.language language_list \|
+#      - split page.product product_list \|
+#      - split page.product_category product_category_list \|
+#      - split page.language language_list \|
 #  -
 #    nom_source: a2
 #    processors:

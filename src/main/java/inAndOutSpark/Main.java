@@ -24,6 +24,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import config.Configuration;
 import config.Sortie;
 import config.TypeConnexion;
+import inputOutput.ReadInput;
+import inputOutput.WriteOutput;
 import processors.Processors;
 
 /**
@@ -161,9 +163,13 @@ public class Main {
 			for (int i = 0; i < conf.getIn().size(); i++) {
 				if (conf.getIn().get(i).getType().equals(TypeConnexion.FOLDER))
 					dfs.put(conf.getIn().get(i).getNom(),
-							ss.read().json(inputFolder + conf.getIn().get(i).getNom() + "/*"));
+							ReadInput.readJSONFromFile(ss, inputFolder + conf.getIn().get(i).getNom() + "/*"));
+				else if (conf.getIn().get(i).getType().equals(TypeConnexion.FILE))
+					dfs.put(conf.getIn().get(i).getNom(),
+							ReadInput.readJSONFromFile(ss, inputFolder + conf.getIn().get(i).getNom()));
 				else
-					dfs.put(conf.getIn().get(i).getNom(), ss.read().json(inputFolder + conf.getIn().get(i).getNom()));
+					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readJSONFromKafka(ss,
+							conf.getIn().get(i).getTopic(), conf.getIn().get(i).getIpBrokers()));
 
 			}
 
@@ -300,7 +306,6 @@ public class Main {
 					// Si les input/output sont indentiques on remplace les
 					// données
 					if (conf.getOperations().get(i).isOutputSameAsInput()) {
-						log.warn("Normalement on passe par ici" + i + " " + j);
 						entrees.remove(conf.getOperations().get(i).getInput_source());
 						entrees.put(conf.getOperations().get(i).getInput_source(), newDF);
 					}
@@ -370,13 +375,18 @@ public class Main {
 	public static int postDo(HashMap<String, Dataset<Row>> entrees) {
 
 		try {
+			int i = 0;
 			Configuration conf = Bc.getValue();
 			for (Sortie sor : conf.getOut()) {
 				for (String str : sor.getFrom()) {
 					log.warn(str);
 					entrees.get(str).show();
-					entrees.get(str).write().json(outputFolder + sor.getNom() + "/" + str);
+					if (conf.getOut().get(i).getType().equals(TypeConnexion.FILE))
+						WriteOutput.printToFs(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
+					else
+						WriteOutput.printToES(entrees.get(str), conf.getOut().get(i).getIndex());
 				}
+				i++;
 			}
 
 			log.warn("postDo - Successful");

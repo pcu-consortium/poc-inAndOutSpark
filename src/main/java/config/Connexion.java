@@ -12,6 +12,7 @@ public abstract class Connexion implements Serializable {
 	TypeConnexion type;
 	Format format;
 	String ipBrokers;
+	String topic;
 
 	/**
 	 * @return
@@ -64,6 +65,14 @@ public abstract class Connexion implements Serializable {
 		this.ipBrokers = ipBrokers;
 	}
 
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
 	/**
 	 * Constructeur avec tous les champs de connexion
 	 * 
@@ -78,6 +87,7 @@ public abstract class Connexion implements Serializable {
 		this.type = type;
 		this.format = format;
 		this.ipBrokers = ipbrokers;
+		this.topic = topic;
 	}
 
 	/**
@@ -89,6 +99,7 @@ public abstract class Connexion implements Serializable {
 		type = TypeConnexion.OTHER;
 		format = Format.JSON;
 		ipBrokers = "";
+		topic = "";
 	}
 
 	@Override
