@@ -4,7 +4,6 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.kafka010.KafkaSourceRDDPartition;
 
 public class ReadInput {
 

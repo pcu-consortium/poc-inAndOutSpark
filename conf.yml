@@ -1,12 +1,12 @@
 ---
 in:
-#  - 
-#   nom: sourcesPCU
-#    type: KAFKA
-#    ipBrokers: localhost:9092
-#    topic: topic2
+  - 
+    nom: sourcesPCU
+    type: KAFKA
+    ipBrokers: localhost:9092
+    topic: topic2
 #    filtreSQL:
-    #si select est vide ou absent on prend toutes les colonnes
+   #si select est vide ou absent on prend toutes les colonnes
 #      all: SELECT * FROM a WHERE visit.visitor_id = "d2cf6994-74a0-c267-6d35-e1c9f4b2e8b8"
 #  - 
 #    nom: b
@@ -20,6 +20,7 @@ in:
   - 
     nom: b2
     type: FILE
+    
 #  -
 #    nom: b3
 #    type: FILE
@@ -28,7 +29,8 @@ in:
 out:
   - 
     nom: c
-    type: FILE
+    type: ELASTICSEARCH
+    index: testcluster/test
     from:
 #      - result
       - b2

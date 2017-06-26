@@ -24,13 +24,13 @@
 - Start the master `./sbin/start-master.sh`
 - Start the worker `./sbin/start-slave.sh`
 - Send the jar with this command `./bin/spark-submit --class inAndOutSpark.Main --master spark://SparkIP:6066 --deploy-mode cluster --supervise /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/example.yml /pathToInputFolder/ /pathToOutputFolder/`
+- To use kafka in a cluster we need to manually import the jar. There is 3 differents solutions but for clarity only the simpler one is shown here, for the others go [here]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#other-ways-to-send-jars-to-spark "here" )
+	- Import the libraries with maven `./bin/spark-submit --class inAndOutSpark.Main --master spark://pathToSpark:6066 --deploy-mode cluster --packages org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.1 --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.1 --packages org.apache.kafka:kafka_2.11:0.10.0.1 --packages org.apache.kafka:kafka-clients:0.10.0.1 /pathToJar/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /pathToConfFile/conf.yml /pathToInputFolder/ /pathToOutputFolder/`
+	
 
-**Note :** It is also possible to use `spark://SparkIP:7077`.
-
+**Note :** It is also possible to use `spark://SparkIP:7077` but it will be in local mode and not in cluster if you don't specify the `--deploy-mode cluster`
 **Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job).
-
-**Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080 .
-
+**Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080.
 
 ## Incoming data
 
@@ -275,4 +275,13 @@ Le post-do se charge d'écrire les résultats en fonction des indications donné
 - Things
 - Other things
 - More things
+
+##Other ways to send jars to spark
+
+-  Get the jars below and put them in  the folder /pathToSpark/spark-x.y.z-bin-hadoopX.Y/jars:
+	- spark-sql-kafka-0-10_2.11-2.1.1.jar
+	- spark-streaming-kafka-0-10_2.11-2.1.1.jar
+	- kafka_2.11-0.10.0.1.jar
+	- kafka-clients-0.10.0.1.jar
+- Send the jars with the following command (they need to be on the file system) ` ./bin/spark-submit --class inAndOutSpark.Main --master spark://P-ASN-Safeword-thest.dhcp.idf.intranet:6066 --deploy-mode cluster --jars /home/thest/workspace/inAndOutSpark/spark-sql-kafka-0-10_2.11-2.1.1.jar --jars /home/thest/workspace/inAndOutSpark/spark-streaming-kafka-0-10_2.11-2.1.1.jar --jars /home/thest/workspace/inAndOutSpark/kafka_2.11-0.10.0.1.jar --jars /home/thest/workspace/inAndOutSpark/kafka-clients-0.10.0.1.jar /home/thest/workspace/inAndOutSpark/target/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /home/thest/workspace/inAndOutSpark/conf.yml /home/thest/workspace/inAndOutSpark/ /home/thest/workspace/inAndOutSpark/`
 

@@ -173,15 +173,6 @@ public class Main {
 
 			}
 
-			// Affichage des dataframe et de leur schéma
-			/*
-			 * for (Iterator<Entry<String, Dataset<Row>>> iterator =
-			 * dfs.entrySet().iterator(); iterator.hasNext();) { Map.Entry
-			 * mapEntry2 = iterator.next(); ((Dataset<Row>)
-			 * mapEntry2.getValue()).show(50, false); ((Dataset<Row>)
-			 * mapEntry2.getValue()).printSchema(); }
-			 */
-
 			log.warn("Read data - Successful");
 			return dfs;
 		} catch (Exception e) {

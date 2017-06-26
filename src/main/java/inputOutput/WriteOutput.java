@@ -11,7 +11,8 @@ public class WriteOutput {
 	}
 
 	public static void printToES(Dataset<Row> entrees, String index) {
-		EsSparkSQL.saveToEs(entrees, index);
+
+		EsSparkSQL.saveToEs(entrees.select("*"), index);
 	}
 
 }
