@@ -142,15 +142,18 @@ The entries field has to be at the level 0 of the configuration file with the la
 
 Each entries has :
 
-| Status | Field name | Description |
-| :----: | :----------: | ----------- |
-| REQUIRED | nom | Name of the flow, to be reused in the rest of the file
-| REQUIRED | type | type of the flow (file, whole folder or kafka) for the moment only files or folder are readable |
-| OPTIONAL | filtreSQL | Simple SQL request to execute on the flow |
-| DEPRECATED | select | Execute a select on the flow |
-| DEPRECATED | where | Execute a where on the flow |
+| Status | Field name | Type of entry | Description |
+| :----: | :--------: | :-----------: | ----------- |
+| REQUIRED | nom | all | Name of the flow, to be reused in the rest of the file
+| REQUIRED | type | all | type of the flow (file, whole folder or kafka) for the moment only files or folder are readable |
+| OPTIONAL | filtreSQL | all | Simple SQL request to execute on the flow |
+| DEPRECATED | select | all | Execute a select on the flow |
+| DEPRECATED | where | all | Execute a where on the flow |
+| REQUIRED | ipBrokers | Kafka | List of the kafka brokers separated with a comma
+| REQUIRED | topic | Kafka | Topic to subscribe to |
 
 **Note :** If the field "select" or "where" are specified, the field "filtreSQL" is not taken into account.
+**Note  2 :** The status "REQUIRED" is mandatory only for the specified type of entry.
 
 ## The operations
 The operation field has to be at the level 0 of the configuration file with the label "operations" and is composed from a list of operations, each composed of the name of the flow to modify, a list of processors and an optional name of the output flow.
@@ -186,11 +189,12 @@ The output field has to be at the level 0 of the configuration field and is comp
 
 Each output possess :
 
-| Status | Field name | Description |
-| :----: | :----------: | ----------- |
-| REQUIRED | nom | Name of the ouput flow. Give its name to the folder with the output data |
-| REQUIRED | type | Type of the output flow (kafka or file). For the moment only file is supported |
-| OPTIONAL | from | List of flow that have to be written on this output. The elements of the list give their names to the sub-folder with the output data in |
+| Status | Field name | Type of output | Description |
+| :----: | :--------: | :------------: | ----------- |
+| REQUIRED | nom | File | Name of the ouput flow. Give its name to the folder with the output data |
+| REQUIRED | type | all | Type of the output flow (kafka or file). For the moment only file is supported |
+| OPTIONAL | from | all | List of flow that have to be written on this output. The elements of the list give their names to the sub-folder with the output data in |
+| REQUIRED | index | elastic | `index/type` where to put the data
 
 **Note :** For an example output, see : [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )
 
@@ -206,7 +210,9 @@ in:
       all: SELECT * FROM a WHERE col1 = "text"
   - 
     nom: b
-    type: FILE
+    type: KAFKA
+    ipBrokers: localhost:9092
+    topic: topic1
 out:
   - 
     nom: c
@@ -216,7 +222,8 @@ out:
       - b
   - 
     nom: d
-    type: FILE
+    type: ELASTICSEARCH
+    index: spark/test
     from:
       - b
 operations:
@@ -230,12 +237,12 @@ operations:
       - join a b col5 col3
 ```
 
+**Note :** It is necessary to have a running kafka/elasticsearch to use them.
+
 # Format of input/output file
 
 The input and output files have the same format. So you can have multiple jobs working one after another without interruptions on the way. They are composed of JSON objects (one JSON object by line)
 The input files have to be at the root of the project.
-
-Ils doivent être composés d'objets JSON (1 objet JSON par ligne)
 
 Example :
 ``` 
@@ -255,7 +262,7 @@ The pre-do should **not** be touched by the user.
 Its job is to :
 
 - Initialize the spark variables globaly used in the code
-- Readin of the configuration file and its transformation into java object
+- Read the configuration file and  transform it into a java object
 - Read the data indicated in the configuration file
 - Execution of the SQL request(s) indicated in the configuration file
 
