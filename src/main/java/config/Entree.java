@@ -34,16 +34,10 @@ public class Entree extends Connexion {
 	/**
 	 * @return
 	 */
-	/**
-	 * @return
-	 */
 	public Filtre getFiltreSQL() {
 		return filtreSQL;
 	}
 
-	/**
-	 * @param filtreSQL
-	 */
 	/**
 	 * @param filtreSQL
 	 */
@@ -79,7 +73,6 @@ public class Entree extends Connexion {
 	 *            Valeur à mettre dans le FROM de la requête
 	 * @return
 	 */
-
 	public String getRequeteSQL(String from) {
 
 		if (filtreSQL.getAll() != "")

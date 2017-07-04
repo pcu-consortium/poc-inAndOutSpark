@@ -318,7 +318,7 @@ public class Main {
 
 	/**
 	 * Function that detect the processor needed, execute it and send the result
-	 * back
+	 * back. - It uses multiple dataframes as sources
 	 * 
 	 * @param Hdf
 	 * @param i
@@ -341,6 +341,15 @@ public class Main {
 
 	}
 
+	/**
+	 * Function that detect the processor needed, execute it and send the result
+	 * back. - It uses only one dataframe as source
+	 * 
+	 * @param Hdf
+	 * @param i
+	 * @param j
+	 * @return
+	 */
 	public static Dataset<Row> executeProcessorsMonoSource(HashMap<String, Dataset<Row>> Hdf, int i, int j) {
 
 		try {

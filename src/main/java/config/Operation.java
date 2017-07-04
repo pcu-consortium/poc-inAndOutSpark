@@ -46,14 +46,23 @@ public class Operation implements Serializable {
 		this.processors = processors;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getOutput_source() {
 		return output_source;
 	}
 
+	/**
+	 * @param output_source
+	 */
 	public void setOutput_source(String output_source) {
 		this.output_source = output_source;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isOutputSameAsInput() {
 
 		return this.input_source == this.output_source;
@@ -80,6 +89,11 @@ public class Operation implements Serializable {
 		output_source = "";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return input_source + " " + processors;

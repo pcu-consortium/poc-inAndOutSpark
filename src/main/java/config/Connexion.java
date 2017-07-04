@@ -57,6 +57,9 @@ public abstract class Connexion implements Serializable {
 		this.format = format;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getIpBrokers() {
 		return ipBrokers;
 	}
@@ -102,6 +105,11 @@ public abstract class Connexion implements Serializable {
 		topic = "";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -112,6 +120,11 @@ public abstract class Connexion implements Serializable {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

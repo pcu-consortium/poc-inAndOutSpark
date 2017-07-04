@@ -52,10 +52,16 @@ public class Sortie extends Connexion {
 		this.from = from;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getIndex() {
 		return index;
 	}
 
+	/**
+	 * @param index
+	 */
 	public void setIndex(String index) {
 		this.index = index;
 	}

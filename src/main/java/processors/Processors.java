@@ -16,12 +16,30 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 
+/**
+ * Class containing all the processors natively supported
+ * 
+ * @author Thomas Estrabaud - Smile
+ *
+ */
 public class Processors {
 
+	/**
+	 * Empty constructor used in reflexion
+	 */
 	public Processors() {
 
 	}
 
+	/**
+	 * Append two columns into a third column. The third column can be named
+	 * with a parameter or generated with column1-column2
+	 * 
+	 * @param df
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> append(Dataset<Row> df, String commande, Logger log) {
 
 		String[] str = commande.split(" ");
@@ -34,6 +52,15 @@ public class Processors {
 
 	}
 
+	/**
+	 * Do a SQL join on two tables. If the columns have the same name, only
+	 * specify it once otherwise, write the 2 names
+	 * 
+	 * @param Hdf
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> join(HashMap<String, Dataset<Row>> Hdf, String commande, Logger log) {
 
 		String[] str = commande.split(" ");
@@ -47,6 +74,14 @@ public class Processors {
 			return null;
 	}
 
+	/**
+	 * Transform a string representation of a date to a date
+	 * 
+	 * @param df
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> stringToDate(Dataset<Row> df, String commande, Logger log) {
 
 		String[] str = commande.split(" ");
@@ -55,6 +90,14 @@ public class Processors {
 
 	}
 
+	/**
+	 * Split the values of a column with a certain separator
+	 * 
+	 * @param df
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> split(Dataset<Row> df, String commande, Logger log) {
 
 		String[] str = commande.split(" ");
@@ -62,6 +105,14 @@ public class Processors {
 		return df.withColumn(str[2], functions.split(df.col(str[1]), str[3]));
 	}
 
+	/**
+	 * Drop the specified column
+	 * 
+	 * @param df
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> drop(Dataset<Row> df, String commande, Logger log) {
 
 		String[] str = commande.split(" ");
@@ -69,15 +120,15 @@ public class Processors {
 		return df.drop(str[3]);
 	}
 
-	public Dataset<Row> aggregate(Dataset<Row> df, String commande, Logger log) {
-		/*
-		 * val sessionUrlsDf = spark.
-		 * sql("select session.session_id, url, count(*) as rating from cleanedUrlFbPageviewDf where session.session_id is not null group by session.session_id, url order by session_id, rating desc"
-		 * )
-		 */
-		return null;
-	}
-
+	/**
+	 * 
+	 * Do collaborative filtering on an opensourcevendor dataset
+	 * 
+	 * @param df
+	 * @param commande
+	 * @param log
+	 * @return
+	 */
 	public Dataset<Row> collaborativeFiltering(Dataset<Row> df, String commande, Logger log) {
 
 		// Création de la sesison spark
