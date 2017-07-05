@@ -4,6 +4,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.elasticsearch.spark.sql.api.java.JavaEsSparkSQL;
 
 /**
  * Class used to read data from somewhere
@@ -45,6 +46,12 @@ public class ReadInput {
 		JavaRDD<String> jrdd2 = ds1.select(ds1.col("value")).toJavaRDD().map(v1 -> v1.mkString());
 
 		return ss.read().json(jrdd2);
+	}
+
+	public static Dataset<Row> readDataFromElastic(SparkSession ss, String index, String request) {
+
+		return JavaEsSparkSQL.esDF(ss, index, request);
+
 	}
 
 }

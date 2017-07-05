@@ -167,6 +167,9 @@ public class Main {
 				else if (conf.getIn().get(i).getType().equals(TypeConnexion.FILE))
 					dfs.put(conf.getIn().get(i).getNom(),
 							ReadInput.readJSONFromFile(ss, inputFolder + conf.getIn().get(i).getNom()));
+				else if (conf.getIn().get(i).getType().equals(TypeConnexion.ELASTICSEARCH))
+					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readDataFromElastic(ss,
+							conf.getIn().get(i).getIndex(), conf.getIn().get(i).getRequest()));
 				else
 					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readJSONFromKafka(ss,
 							conf.getIn().get(i).getTopic(), conf.getIn().get(i).getIpBrokers()));
@@ -388,12 +391,12 @@ public class Main {
 				}
 				i++;
 			}
-
 			log.warn("postDo - Successful");
 		} catch (Exception e) {
 			log.warn("postDo - Unsuccessful");
 			e.printStackTrace();
 		}
+
 		return 0;
 	}
 }

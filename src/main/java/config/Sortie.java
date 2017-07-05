@@ -12,7 +12,6 @@ import java.util.List;
 public class Sortie extends Connexion {
 
 	List<String> from;
-	String index;
 
 	/**
 	 * 
@@ -50,20 +49,6 @@ public class Sortie extends Connexion {
 	 */
 	public void setFrom(List<String> from) {
 		this.from = from;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getIndex() {
-		return index;
-	}
-
-	/**
-	 * @param index
-	 */
-	public void setIndex(String index) {
-		this.index = index;
 	}
 
 	/*

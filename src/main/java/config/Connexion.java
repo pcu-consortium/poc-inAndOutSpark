@@ -13,6 +13,7 @@ public abstract class Connexion implements Serializable {
 	Format format;
 	String ipBrokers;
 	String topic;
+	String index;
 
 	/**
 	 * @return
@@ -77,6 +78,20 @@ public abstract class Connexion implements Serializable {
 	}
 
 	/**
+	 * @return
+	 */
+	public String getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index
+	 */
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	/**
 	 * Constructeur avec tous les champs de connexion
 	 * 
 	 * @param nom
@@ -84,7 +99,7 @@ public abstract class Connexion implements Serializable {
 	 * @param format
 	 * @param filtreSQL
 	 */
-	public Connexion(String nom, TypeConnexion type, Format format, Filtre filtreSQL, String ipbrokers) {
+	public Connexion(String nom, TypeConnexion type, Format format, Filtre filtreSQL, String ipbrokers, String topic) {
 		super();
 		this.nom = nom;
 		this.type = type;
@@ -103,6 +118,8 @@ public abstract class Connexion implements Serializable {
 		format = Format.JSON;
 		ipBrokers = "";
 		topic = "";
+		index = "";
+
 	}
 
 	/*

@@ -9,6 +9,7 @@ package config;
 public class Entree extends Connexion {
 
 	Filtre filtreSQL;
+	String request;
 
 	/**
 	 * 
@@ -16,6 +17,7 @@ public class Entree extends Connexion {
 	public Entree() {
 		super();
 		filtreSQL = new Filtre();
+		request = "";
 	}
 
 	/**
@@ -24,11 +26,12 @@ public class Entree extends Connexion {
 	 * @param format
 	 * @param filtreSQL
 	 */
-	public Entree(String nom, TypeConnexion type, Format format, Filtre filtreSQL) {
+	public Entree(String nom, TypeConnexion type, Format format, Filtre filtreSQL, String request) {
 		this.nom = nom;
 		this.type = type;
 		this.format = format;
 		this.filtreSQL = filtreSQL;
+		this.request = request;
 	}
 
 	/**
@@ -43,6 +46,14 @@ public class Entree extends Connexion {
 	 */
 	public void setFiltreSQL(Filtre filtreSQL) {
 		this.filtreSQL = filtreSQL;
+	}
+
+	public String getRequest() {
+		return request;
+	}
+
+	public void setRequest(String request) {
+		this.request = request;
 	}
 
 	/*

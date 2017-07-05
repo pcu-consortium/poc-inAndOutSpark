@@ -100,18 +100,18 @@ This is the folder tree that you should get :
 - cExample
 	- aExample
 		- part-00000-xxx.json
-		- _SUCESS
+		- _SUCCESS
 		- .part-00000-xxx.json.crc
 		- _SUCCES.crc
 	- bExample
 		- part-00000-xxx.json
-		- _SUCESS
+		- _SUCCESS
 		- .part-00000-xxx.json.crc
 		- _SUCCES.crc
 - dExample
 	- aExample
 		- part-00000-xxx.json
-		- _SUCESS
+		- _SUCCESS
 		- .part-00000-xxx.json.crc
 		- _SUCCES.crc
 
@@ -151,6 +151,9 @@ Each entries has :
 | DEPRECATED | where | all | Execute a where on the flow |
 | REQUIRED | ipBrokers | Kafka | List of the kafka brokers separated with a comma
 | REQUIRED | topic | Kafka | Topic to subscribe to |
+| REQUIRED | index | ElasticSearch | Index/type to send the request | 
+| OPTIONAL | request | ElasticSearch | Request to apply on the data |
+
 
 **Note :** If the field "select" or "where" are specified, the field "filtreSQL" is not taken into account.
 **Note  2 :** The status "REQUIRED" is mandatory only for the specified type of entry.
@@ -291,4 +294,5 @@ Le post-do se charge d'écrire les résultats en fonction des indications donné
 	- kafka_2.11-0.10.0.1.jar
 	- kafka-clients-0.10.0.1.jar
 - Send the jars with the following command (they need to be on the file system) ` ./bin/spark-submit --class inAndOutSpark.Main --master spark://P-ASN-Safeword-thest.dhcp.idf.intranet:6066 --deploy-mode cluster --jars /home/thest/workspace/inAndOutSpark/spark-sql-kafka-0-10_2.11-2.1.1.jar --jars /home/thest/workspace/inAndOutSpark/spark-streaming-kafka-0-10_2.11-2.1.1.jar --jars /home/thest/workspace/inAndOutSpark/kafka_2.11-0.10.0.1.jar --jars /home/thest/workspace/inAndOutSpark/kafka-clients-0.10.0.1.jar /home/thest/workspace/inAndOutSpark/target/inAndOutSpark-0.0.1-SNAPSHOT-jar-with-dependencies.jar /home/thest/workspace/inAndOutSpark/conf.yml /home/thest/workspace/inAndOutSpark/ /home/thest/workspace/inAndOutSpark/`
+
 

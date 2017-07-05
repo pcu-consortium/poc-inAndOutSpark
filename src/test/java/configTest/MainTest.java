@@ -25,10 +25,8 @@ import com.holdenkarau.spark.testing.SharedJavaSparkContext;
 import config.Configuration;
 import config.Entree;
 import config.Filtre;
-import config.Format;
 import config.Operation;
 import config.Sortie;
-import config.TypeConnexion;
 
 public class MainTest extends SharedJavaSparkContext {
 
@@ -37,8 +35,8 @@ public class MainTest extends SharedJavaSparkContext {
 		Filtre f1 = new Filtre("", "referer.domain = www.google.tn", "");
 		Filtre f2 = new Filtre("", "", "SELECT * FROM b WHERE referer.domain = www.google.fr");
 		List<Entree> in = new ArrayList<Entree>();
-		in.add(new Entree("a", TypeConnexion.FILE, Format.JSON, f1));
-		in.add(new Entree("b", TypeConnexion.FILE, Format.JSON, f2));
+		// in.add(new Entree("a", TypeConnexion.FILE, Format.JSON, f1));
+		// in.add(new Entree("b", TypeConnexion.FILE, Format.JSON, f2));
 		List<Sortie> out = new ArrayList<Sortie>();
 		// out.add(new Sortie("c", TypeConnexion.FILE, Format.JSON, new
 		// ArrayList<String>()));
