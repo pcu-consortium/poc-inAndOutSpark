@@ -177,7 +177,9 @@ List of existing operations:
 | OPERATIONS | stringToDate | [oldColumn] [newColumn] | We do a "+00:01" to the time |
 | OPERATIONS | split | [column1] [column2] [separator] | Warning : For a few characters as '\|' it is necessary to put a "\" before |
 | OPERATIONS | collaborativeFiltering | / | Apply the ML algorithm on the source (the data is not preserved |
-| OPERATIONS | drop | [column] | Drop the column
+| OPERATIONS | drop | [column] | Drop the column |
+| OPERATIONS | orderBy | [column] | Execute a sql order by on the column |
+| OPERATIONS | addTimeStamp | [new column] [pretty] | Add a timestamp of when the data passed the processor. The pretty is optional and show the date in a pretty format |
 | OPERATIONS_MULTI_SOURCES | join | [flow1] [flow2] [column1] [column2] | If the two columns have the same name, only state the field [column1] |
 
 **Note :** For the OPERATIONS_MULTI_SOURCES, it is necessary to write `multi_sources` as the first element of the line, like : `- multi_sources join aExample bExample test3`.

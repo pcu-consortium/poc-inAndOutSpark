@@ -1,0 +1,21 @@
+---
+in:
+  - 
+    nom: b
+    type: KAFKA
+    ipBrokers: localhost:9092
+    topic: topic1 
+    
+out:
+  - 
+    nom: c
+    type: ELASTICSEARCH
+    index: testlecture/test
+    from:
+      - b
+      
+operations:
+  -
+    input_source: b
+    processors:
+      - append product_name product_langage

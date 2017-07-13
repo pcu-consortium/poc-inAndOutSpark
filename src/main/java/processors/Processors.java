@@ -1,5 +1,6 @@
 package processors;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -22,7 +23,7 @@ import org.apache.spark.sql.functions;
  * @author Thomas Estrabaud - Smile
  *
  */
-public class Processors {
+public class Processors implements Serializable {
 
 	/**
 	 * Empty constructor used in reflexion
@@ -118,6 +119,74 @@ public class Processors {
 		String[] str = commande.split(" ");
 
 		return df.drop(str[3]);
+	}
+
+	/**
+	 * Execute a SQL order by
+	 * 
+	 * @param df
+	 * @param column
+	 * @return
+	 */
+	public Dataset<Row> orderBy(Dataset<Row> df, String commande, Logger log) {
+
+		String[] str = commande.split(" ");
+
+		return df.orderBy(str[1]);
+	}
+
+	/**
+	 * Ajoute une colonne contenant la date du passage dans le processeur
+	 * 
+	 * @param df
+	 * @param column
+	 * @param log
+	 * @return
+	 */
+	public Dataset<Row> addTimeStamp(Dataset<Row> df, String column, Logger log) {
+
+		String[] str = column.split(" ");
+
+		return df.withColumn(str[1], functions.current_timestamp());
+
+		/*
+		 * SparkSession ss = SparkSession.builder().getOrCreate();
+		 * df.createOrReplaceTempView("df");
+		 * 
+		 * // Création de la fonction UDF qui donne un nouveau timestamp pour //
+		 * chaque row ss.udf().register("timestamp", new UDF1<Row, String>() {
+		 * 
+		 * @Override public String call(Row r) { return
+		 * Instant.now().toString(); }
+		 * 
+		 * }, DataTypes.StringType);
+		 * 
+		 * // On ajoute la colonne avec les nouvelles infos (on fait l'UDF sur
+		 * la // première colonne, vu que celle que l'on veut créer n'existe pas
+		 * // encore)
+		 * 
+		 * Dataset<Row> df2 = ss.sql("SELECT *, timestamp(" +
+		 * df.columns()[0].toString() + ") AS " + str[1] + " FROM df");
+		 * df2.show(); return df2;
+		 */
+	}
+
+	/**
+	 * Ajoute une colonne contenant un UID à chaque row
+	 * 
+	 * @param df
+	 * @param column
+	 * @param log
+	 * @return
+	 */
+	public Dataset<Row> addUID(Dataset<Row> df, String column, Logger log) {
+
+		String[] str = column.split(" ");
+		log.warn(str.length + " " + str[2]);
+		df.show();
+
+		return df.withColumn(str[1], functions.monotonically_increasing_id());
+
 	}
 
 	/**
