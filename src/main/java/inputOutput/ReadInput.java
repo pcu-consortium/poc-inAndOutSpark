@@ -6,6 +6,8 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.elasticsearch.spark.sql.api.java.JavaEsSparkSQL;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * Class used to read data from somewhere
  * 
@@ -39,13 +41,14 @@ public class ReadInput {
 	 */
 	public static Dataset<Row> readJSONFromKafka(SparkSession ss, String topic, String IpBrokers) {
 
-		Dataset<Row> ds1 = ss.read().format("kafka").option("kafka.bootstrap.servers", IpBrokers)
+		Dataset<Row> ds = ss.read().format("kafka").option("kafka.bootstrap.servers", IpBrokers)
 				.option("subscribe", topic).load().selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "topic",
 						"partition", "offset", "timestamp", "timestampType");
+		ds.show();
+		Log.warn(topic + " " + IpBrokers);
+		JavaRDD<String> jrdd = ds.select(ds.col("value")).toJavaRDD().map(v1 -> v1.mkString());
 
-		JavaRDD<String> jrdd2 = ds1.select(ds1.col("value")).toJavaRDD().map(v1 -> v1.mkString());
-
-		return ss.read().json(jrdd2);
+		return ss.read().json(jrdd);
 	}
 
 	public static Dataset<Row> readDataFromElastic(SparkSession ss, String index, String request) {

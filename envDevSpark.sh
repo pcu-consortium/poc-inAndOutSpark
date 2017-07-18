@@ -23,8 +23,8 @@ $path/$kafka/bin/kafka-server-start.sh $path/$kafka/config/server.properties &
 sleep 5
 #Démarrage kafka
 
-$path/$kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic1 & 
-echo {"test3":"test3.1","test4":"test4.1", "test5":"test5.1", "test6":"test6.1"} > $path/$kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic1
+$path/$kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic1 &
+#echo {"test3":"test3.1","test4":"test4.1", "test5":"test5.1", "test6":"test6.1"} > $path/$kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic1
 
 
 

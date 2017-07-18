@@ -1,0 +1,15 @@
+---
+in:
+  - 
+    nom: a
+    type: KAFKA
+    ipBrokers: localhost:9092
+    topic: topic1
+
+out:
+  - 
+    nom: c
+    type: KAFKA
+    topic: topic2
+    from:
+     - a

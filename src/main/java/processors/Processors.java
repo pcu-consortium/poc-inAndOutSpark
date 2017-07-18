@@ -171,6 +171,16 @@ public class Processors implements Serializable {
 		 */
 	}
 
+	public Dataset<Row> SQL(Dataset<Row> df, String commande, Logger log) {
+
+		String[] str = commande.split(" ");
+		SparkSession ss = SparkSession.builder().getOrCreate();
+		df.createOrReplaceTempView(str[1]);
+
+		return ss.sql(str[2]);
+
+	}
+
 	/**
 	 * Ajoute une colonne contenant un UID à chaque row
 	 * 

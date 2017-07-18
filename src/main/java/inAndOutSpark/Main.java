@@ -386,6 +386,8 @@ public class Main {
 					entrees.get(str).show();
 					if (conf.getOut().get(i).getType().equals(TypeConnexion.FILE))
 						WriteOutput.printToFs(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
+					else if (conf.getOut().get(i).getType().equals(TypeConnexion.KAFKA))
+						WriteOutput.printToKafka(entrees.get(str), conf.getOut().get(i).getTopic(), "");
 					else
 						WriteOutput.printToES(entrees.get(str), conf.getOut().get(i).getIndex());
 				}

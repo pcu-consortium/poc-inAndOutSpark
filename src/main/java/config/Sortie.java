@@ -12,6 +12,7 @@ import java.util.List;
 public class Sortie extends Connexion {
 
 	List<String> from;
+	String key;
 
 	/**
 	 * 
@@ -20,6 +21,7 @@ public class Sortie extends Connexion {
 		super();
 		from = new ArrayList<String>();
 		index = "";
+		key = "";
 	}
 
 	/**
@@ -28,13 +30,14 @@ public class Sortie extends Connexion {
 	 * @param format
 	 * @param from
 	 */
-	public Sortie(String nom, TypeConnexion type, Format format, List<String> from, String index) {
+	public Sortie(String nom, TypeConnexion type, Format format, List<String> from, String index, String key) {
 		super();
 		this.nom = nom;
 		this.type = type;
 		this.format = format;
 		this.from = from;
 		this.index = index;
+		this.key = key;
 	}
 
 	/**
@@ -49,6 +52,14 @@ public class Sortie extends Connexion {
 	 */
 	public void setFrom(List<String> from) {
 		this.from = from;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	/*
