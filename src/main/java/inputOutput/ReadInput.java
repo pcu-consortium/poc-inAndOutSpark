@@ -54,7 +54,11 @@ public class ReadInput {
 	public static Dataset<Row> readDataFromElastic(SparkSession ss, String index, String request) {
 
 		return JavaEsSparkSQL.esDF(ss, index, request);
-
 	}
 
+	public static Dataset<Row> readDataFromParquetFile(SparkSession ss, String path) {
+
+		return ss.read().parquet(path);
+
+	}
 }

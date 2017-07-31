@@ -48,6 +48,7 @@ public class Main {
 	static String inputFolder = "";
 	static String outputFolder = "";
 	static String confFile = "";
+	static String importFolder = "";
 
 	/**
 	 * Méthode principale. Appelle les différentes étapes
@@ -83,7 +84,7 @@ public class Main {
 
 		try {
 			// si on execute depuis eclipse
-			if (args.length == 4)
+			if (args.length >= 4)
 				sparkConf = new SparkConf().setAppName("inAndOutSpark").setMaster(args[3]);
 			// si on execute en spark-submit
 			else
@@ -116,6 +117,7 @@ public class Main {
 			// on
 			// file le fichier de conf en dur)
 			JavaPairRDD<String, String> conf;
+			JavaPairRDD<String, String> importInput;
 
 			if (args.length < 3) {
 				log.warn("Not enough parameters");
@@ -133,6 +135,7 @@ public class Main {
 
 			// On crée l'objet config à envoyer en broadcast
 			Configuration c = mapper.readValue(conf.values().first().toString(), Configuration.class);
+
 			// System.out.println(conf.first());
 			// On envoit l'objet en broadcast
 			Bc = jsc.broadcast(c);
@@ -167,6 +170,9 @@ public class Main {
 				else if (conf.getIn().get(i).getType().equals(TypeConnexion.FILE))
 					dfs.put(conf.getIn().get(i).getNom(),
 							ReadInput.readJSONFromFile(ss, inputFolder + conf.getIn().get(i).getNom()));
+				else if (conf.getIn().get(i).getType().equals(TypeConnexion.PARQUET))
+					dfs.put(conf.getIn().get(i).getNom(),
+							ReadInput.readDataFromParquetFile(ss, inputFolder + conf.getIn().get(i).getNom()));
 				else if (conf.getIn().get(i).getType().equals(TypeConnexion.ELASTICSEARCH))
 					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readDataFromElastic(ss,
 							conf.getIn().get(i).getIndex(), conf.getIn().get(i).getRequest()));
@@ -388,6 +394,8 @@ public class Main {
 						WriteOutput.printToFs(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
 					else if (conf.getOut().get(i).getType().equals(TypeConnexion.KAFKA))
 						WriteOutput.printToKafka(entrees.get(str), conf.getOut().get(i).getTopic(), "");
+					else if (conf.getOut().get(i).getType().equals(TypeConnexion.PARQUET))
+						WriteOutput.printParquetFile(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
 					else
 						WriteOutput.printToES(entrees.get(str), conf.getOut().get(i).getIndex());
 				}

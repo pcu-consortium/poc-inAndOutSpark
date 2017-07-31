@@ -43,12 +43,15 @@ public class WriteOutput {
 
 		df.show(50, false);
 		df.printSchema();
-		// entrees.withColumn("values", entrees.toJSON());
 
-		// df.select(df.col("value").alias("test"));
 		df.selectExpr("key", "value", "value", "key").write().format("kafka")
 				.option("kafka.bootstrap.servers", "localhost:9092").option("topic", topic).save();
 
+	}
+
+	public static void printParquetFile(Dataset<Row> entrees, String path) {
+
+		entrees.write().parquet("people.parquet");
 	}
 
 }

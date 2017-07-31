@@ -17,6 +17,8 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 
+import inputOutput.ReadInput;
+
 /**
  * Class containing all the processors natively supported
  * 
@@ -197,6 +199,33 @@ public class Processors implements Serializable {
 
 		return df.withColumn(str[1], functions.monotonically_increasing_id());
 
+	}
+
+	public Dataset<Row> joinIn(Dataset<Row> df, String commande, Logger log) {
+
+		// on récupère le joinIn et l'index, le nbColonne, la colonne 1 (et 2)
+		String[] str = commande.split(" ");
+
+		SparkSession ss = SparkSession.builder().getOrCreate();
+
+		// Si on a qu'une colonne
+		if (str[2].equals("1")) {
+			// on récupupère la requete
+			String request = commande.substring(str[0].length() + str[1].length() + str[2].length() + str[3].length());
+			// récupération des données
+			Dataset<Row> dfFromEs = ReadInput.readDataFromElastic(ss, str[1], request);
+			// Join sur une seule colonne
+			return df.join(dfFromEs, str[3]);
+
+		} else {
+			// on récupère la requete
+			String request = commande
+					.substring(str[0].length() + str[1].length() + str[2].length() + str[3].length() + str[4].length());
+			// récupération des données
+			Dataset<Row> dfFromEs = ReadInput.readDataFromElastic(ss, str[1], request);
+			// execution de la jointure
+			return df.join(dfFromEs, df.col(str[3]).equalTo(dfFromEs.col(str[4])));
+		}
 	}
 
 	/**
