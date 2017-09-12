@@ -1,0 +1,15 @@
+---
+in:
+  - 
+    nom: b
+    type: KAFKA
+    ipBrokers: localhost:9092
+    topic: test
+
+out:
+  - 
+    nom: c
+    type: ELASTICSEARCH
+    index: testkafkapcu2/test
+    from:
+      - b

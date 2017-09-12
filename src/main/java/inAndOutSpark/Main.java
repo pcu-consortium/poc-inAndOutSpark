@@ -179,6 +179,7 @@ public class Main {
 				else
 					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readJSONFromKafka(ss,
 							conf.getIn().get(i).getTopic(), conf.getIn().get(i).getIpBrokers()));
+				dfs.get(conf.getIn().get(i).getNom()).show(false);
 
 			}
 

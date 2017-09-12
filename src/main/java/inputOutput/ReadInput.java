@@ -40,14 +40,20 @@ public class ReadInput {
 	 * @return
 	 */
 	public static Dataset<Row> readJSONFromKafka(SparkSession ss, String topic, String IpBrokers) {
+		/*
+		 * Dataset<Row> ds =
+		 * ss.read().format("kafka").option("kafka.bootstrap.servers",
+		 * IpBrokers) .option("subscribe", topic).load(); ds.show(); return
+		 * null;
+		 */
 
 		Dataset<Row> ds = ss.read().format("kafka").option("kafka.bootstrap.servers", IpBrokers)
 				.option("subscribe", topic).load().selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "topic",
 						"partition", "offset", "timestamp", "timestampType");
-		ds.show();
+		ds.show(false);
 		Log.warn(topic + " " + IpBrokers);
 		JavaRDD<String> jrdd = ds.select(ds.col("value")).toJavaRDD().map(v1 -> v1.mkString());
-
+		Log.warn(jrdd.collect().toString());
 		return ss.read().json(jrdd);
 	}
 
