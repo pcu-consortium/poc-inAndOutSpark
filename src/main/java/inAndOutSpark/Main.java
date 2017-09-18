@@ -39,6 +39,7 @@ import processors.Processors;
 
 public class Main {
 
+	// Créer un objet properties
 	static Broadcast<Configuration> Bc;
 	static SparkConf sparkConf = null;
 	static JavaSparkContext jsc = null;
@@ -282,9 +283,6 @@ public class Main {
 
 		try {
 			Configuration conf = Bc.getValue();
-
-			Method method = null;
-			Processors p = new Processors();
 
 			// pour chaque source
 			for (int i = 0; i < conf.getOperations().size(); i++) {
