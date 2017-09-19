@@ -13,6 +13,8 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 public class MainStreaming {
 
+	// Tentative de lecture de fichier en local en streaming
+
 	public static void main(String[] args) throws InterruptedException {
 
 		// Initialisation
@@ -42,7 +44,7 @@ public class MainStreaming {
 		// Autre test de lecture en continu d'un dossier (commenter cette partie
 		// là ou celle du dessus)
 		SparkConf sparkConf = new SparkConf().setAppName("JavaWordCount");
-		JavaStreamingContext ssc = new JavaStreamingContext("local[4]", "JavaWordCount", new Duration(10000)); // 10s
+		JavaStreamingContext ssc = new JavaStreamingContext("local[*]", "JavaWordCount", new Duration(10000)); // 10s
 
 		JavaDStream<String> textStream = ssc.textFileStream("test/");
 
