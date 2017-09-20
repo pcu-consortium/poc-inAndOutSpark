@@ -6,7 +6,7 @@
 
 - Clone the project
 - Import it in eclipse
-- Run > Run Configuration > Arguments > "`[configuration file] [path to input folder] [path to output folder][local|spark server adress]`"
+- Run > Run Configuration > Arguments > "`[configuration file] [path to input folder] [path to output folder][local|spark server adress]`", ex. : example.yml ./ ./ local
 - Run the Main.java class
 
 ### Local spark-submit
@@ -32,57 +32,16 @@
 **Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job).
 **Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080.
 
-## Incoming data
+## Example incoming data
 
-File aExample :
-```
-{"test1":"test1.1", "test2":"test2.1", "test3":"test3.1","test8":"test8.1"|test8.2}
-{"test1":"test1.2", "test2":"test2.1", "test3":"test3.2","test8":"test8.3"|test8.4}
-{"test1":"test1.3", "test2":"test2.1", "test3":"test3.3","test8":"test8.5"|test8.6}
-{"test1":"test1.4", "test2":"test2.4", "test3":"test3.4","test8":"test8.7"|test8.8}
-```
+- file [aExample](aExample)
+- file [bExample](bExample)
 
-File bExample :
-```
-{"test3":"test3.1","test4":"test4.1", "test5":"test5.1", "test6":"test6.1"}
-```
+## Example configuration file
 
-## Configuration file
+### Its content
+See file [example.yml](example.yml)
 
-### File content
-```
----
-in:
-  - 
-    nom: aExample
-    type: FILE
-    filtreSQL:
-      all: SELECT * FROM aExample WHERE test2 = "test2.1"
-  - 
-    nom: bExample
-    type: FILE
-    filtreSQL:
-      all: SELECT test3, test4, test5 FROM bExample
-out:
-  - 
-    nom: cExample
-    type: FILE
-    from:
-      - aExample
-      - bExample
-  - 
-    nom: dExample
-    type: FILE
-    from:
-      - aExample
-operations:
-  -
-    input_source: aExample
-    processors:
-      - append test1 test2 resultAppend
-      - split test8 resultSplit \|
-      - multi_sources join aExample bExample test3
-```
 ### Explanations
 
 1. We read the file aExample and apply the SQL request (so we will keep only the first 3 lines)
@@ -127,6 +86,34 @@ The results are in the files part-00000-xxx.json and should be :
 {"test3":"test3.1","test4":"test4.1","test5":"test5.1"}
 ```
  
+## How to start Kafka for examples that require it
+For instance, for example [testKafka.yml](testKafka.yml) :
+- download and install Kafka (0.10+, for Scala 2.11), see https://kafka.apache.org/quickstart
+- start server, create topics, start producer & consumer :
+````
+bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic1
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic2
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic1
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic2 --from-beginning
+````
+- then write some JSON in producer
+- and run Main.main() in Eclipse with these arguments : testKafka.yml ./ ./ local
+- => producer's JSON should appear in the consumer
+
+## How to start ElasticSearch for examples that require it
+For instance, for example [confIndexing.yml](confIndexing.yml) :
+- download and unzip ElasticSearch 5 from https://www.elastic.co/downloads/elasticsearch
+- run
+````
+bin/elasticsearch
+````
+
+
 
 # Composition of the configuration file
 
