@@ -51,11 +51,8 @@
 			<version>4.12</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.holdenkarau/spark-testing-base_2.11 -->
-		<!-- <dependency>
-			<groupId>com.holdenkarau</groupId>
-			<artifactId>spark-testing-base_2.11</artifactId>
-			<version>2.1.0_0.6.0</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.holdenkarau</groupId> <artifactId>spark-testing-base_2.11</artifactId> 
+			<version>2.1.0_0.6.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch-spark-20_2.11</artifactId>
@@ -73,6 +70,7 @@
 			<artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>
