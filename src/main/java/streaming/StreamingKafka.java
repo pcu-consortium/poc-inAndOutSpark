@@ -11,6 +11,21 @@ public class StreamingKafka {
 
 	public static void main(String[] args) throws InterruptedException {
 
+		// Lancer zookeeper bin/zookeeper-server-start.sh
+		// config/zookeeper.properties
+		// Lancer kafka bin/kafka-server-start.sh config/server.properties
+		// Créer les deux topics bin/kafka-topics.sh --create --zookeeper
+		// localhost:2181 --replication-factor 1 --partitions 1 --topic test
+		// bin/kafka-topics.sh --create --zookeeper localhost:2181
+		// --replication-factor 1 --partitions 1 --topic test1
+
+		// Ecrire dans topic test
+		// bin/kafka-console-producer.sh --broker-list localhost:9092 --topic
+		// test
+		// Lire depuis test1
+		// bin/kafka-topics.sh --create --zookeeper localhost:2181
+		// --replication-factor 1 --partitions 1 --topic test
+
 		SparkConf conf = new SparkConf().setAppName("NetworkWordCount");
 		JavaStreamingContext ssc = new JavaStreamingContext("local[*]", "NetworkWordCount", new Duration(5000)); // 5s
 		SparkSession ss = SparkSession.builder().getOrCreate();
