@@ -44,15 +44,14 @@ public class StreamingKafka {
 		ds.writeStream().format("kafka").option("kafka.bootstrap.servers", "localhost:9092").option("topic", "test1")
 				.option("checkpointLocation", "testKafka").start();
 
-		// Je n'ai pas réussi à faire en sorte d'écrire ds dans deux files
-		// différentes en appelant deux fois le writestream.
+		// write at the same time in another topic (must exist) :
+		// (call start() on both writeStream(), NOT on the single streaming context)
+      ds.writeStream().format("kafka").option("kafka.bootstrap.servers", "localhost:9092").option("topic", "test2")
+            .option("checkpointLocation", "testKafka2").start(); // checkpointLocation different than the previous one else error
 
-		// Je n'ai pas réussi à faire en sorte d'afficher le contenu du
-		// dataframe dans la console le "ds.show();" il en veut pas
+		// ds.show(); // does not work in streaming
 
-		// ds.show();
-
-		// ssc.start();
+		// ssc.start(); // NOT required
 		ssc.awaitTermination();
 	}
 }
