@@ -1,3 +1,30 @@
+=====================================================
+
+PCU Consortium - PCU Platform
+
+https://pcu-consortium.github.io
+
+https://github.com/pcu-consortium
+
+Copyright (c) 2017 The PCU Consortium
+
+=====================================================
+
+YAML-configured ETL pipeline on Spark (Proof of Concept).
+
+Team : Thomas Estrabaud and Marc Dutoo, Smile
+
+License : Apache License 2.0
+
+Requirements : [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), [Maven 3](http://maven.apache.org/download.cgi), [Spark_2.11 2.2](https://spark.apache.org/downloads.html), optionally [Kafka_2.11 11.0](https://kafka.apache.org/downloads) and [ElasticSearch 5](https://www.elastic.co/downloads/elasticsearch)
+
+Roadmap :
+- refactoring & industrialization including tests (provisioning) & integrate in PCU (spark submit, schema & configuration management)
+- schema : de/serialize Kafka value using avro (Tubular UDFs), check compatibility beyond kafka
+- UDFize operations : auto wrap all UDFs / spark SQL functions as operations, share operation UDFs outside inAndOut
+- end-to-end reliability / robustness (Kafka offset commit)
+
+
 # Quickstart
 
 ## How to run the example
@@ -291,12 +318,6 @@ The do (not yet exploded in sub-functions) execute the operations indicated in t
 The post-do should **not** be touched by the user.
 The post-do's job is to write the results in function of the indications given in the configuration file 
 Le post-do se charge d'écrire les résultats en fonction des indications données dans le fichier de configuration (see [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )).
-
-## The to-do
-
-- Things
-- Other things
-- More things
 
 ##Other ways to send jars to spark
 

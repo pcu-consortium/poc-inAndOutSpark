@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -36,8 +38,9 @@ import streaming.EsForeachWriter;
  *
  */
 public class WriteOutput {
-   
-   private static Log log = LogFactory.getLog(WriteOutput.class); // TODO conf, in POM ; rather slf4j like pcu ? (or log4j like spark ES BUT logback preferred in pcu)
+
+   private static Logger log = LogManager.getLogger(Main.class); // on log4 like Spark ; TODO rather slf4j on logback like pcu ?
+   private static Log esLog = LogFactory.getLog(WriteOutput.class); // !!??
 
 	/**
 	 * Write json data on the file system
@@ -135,15 +138,15 @@ root
          //esSettings.setNodes(esNodes); // rather at init (single ES)
          
          // conf : TODO rather at init ?
-         InitializationUtils.setValueWriterIfNotSet(esSettings, ScalaValueWriter.class, log); // or setOutputAsJson ; ScalaValueWriter
+         InitializationUtils.setValueWriterIfNotSet(esSettings, ScalaValueWriter.class, esLog); // or setOutputAsJson ; ScalaValueWriter
          // NOT NoOpValueWriter.class else EsHadoopIllegalStateException: Incorrect configuration - NoOpValueWriter should not have been called
          //esSettings.setProperty(ConfigurationOptions.ES_OUTPUT_JSON, "true"); // ... and not better
-         InitializationUtils.setBytesConverterIfNeeded(esSettings, WritableBytesConverter.class, log);
+         InitializationUtils.setBytesConverterIfNeeded(esSettings, WritableBytesConverter.class, esLog);
          //InitializationUtils.setFieldExtractorIfNotSet(esSettings, , log); // DataFrameFieldExtractor.class
          esSettings.setProperty(ConfigurationOptions.ES_BATCH_SIZE_ENTRIES, "1"); // no batch in streaming mode ! else default 1000 see RestRepository.doWriteToIndex() l. 194
          
          esSettings.setResourceWrite(index); // must contain type ex. files/file, else EsHadoopIllegalArgumentException: invalid pattern given test/ below RestService.createWriter(RestService.java:566)
-         EsForeachWriter esfw = new EsForeachWriter(esSettings.save(), df.schema(), keepOriginal, log);
+         EsForeachWriter esfw = new EsForeachWriter(esSettings.save(), df.schema(), keepOriginal);
          df.writeStream().foreach(esfw).start();
       }
 	}
@@ -236,6 +239,7 @@ root
    }
    
    /**
+    * TODO move to spark helper
     * column filtering helper, since df.drop(col) doesn't work on nested columns
     * @param df 
     * @return 

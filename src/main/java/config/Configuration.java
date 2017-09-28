@@ -15,7 +15,8 @@ import scala.Serializable;
  *
  */
 public class Configuration implements Serializable {
-
+   private static final long serialVersionUID = 1L;
+   
    private Properties conf;
 	List<Entree> in;
 	List<Sortie> out;
@@ -31,8 +32,14 @@ public class Configuration implements Serializable {
    public Properties getConf() {
       return conf;
    }
-   public void setConf(Properties conf) {
-      this.conf = conf;
+   public void setConf(Object conf) {
+      if (conf instanceof String) {
+         this.conf = new Properties(); // empty properties case https://stackoverflow.com/questions/38629825/how-to-map-empty-string-with-map-using-jackson-mapper
+      } else if (conf instanceof Properties) {
+         this.conf = (Properties) conf;
+      } else {
+         throw new RuntimeException("Not String or Properties but " + conf);
+      }
    }
 
 	/**

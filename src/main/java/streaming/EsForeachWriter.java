@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.spark.sql.ForeachWriter;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.types.StructType;
@@ -12,31 +15,35 @@ import org.elasticsearch.hadoop.cfg.Settings;
 import org.elasticsearch.hadoop.rest.RestService;
 import org.elasticsearch.hadoop.rest.RestService.PartitionWriter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import inAndOutSpark.Main;
+import inputOutput.WriteOutput;
 
 public class EsForeachWriter extends ForeachWriter<Row> {
    private static final long serialVersionUID = -8534656621391425895L;
-   private transient PartitionWriter writer = null; // transient else error not serializable ; NB. ES Hadoop JacksonJsonGenerator uses org.codehaus.jackson.JsonGenerator
+
+   private static Logger log = LogManager.getLogger(Main.class); // on log4 like Spark ; TODO rather slf4j on logback like pcu ?
+   private static Log esLog = LogFactory.getLog(WriteOutput.class); // !!??
+   
    private String esSettingsString;
    private StructType schema;
    private boolean keepOriginal = true; // emerged fields ?
-   private Log log;
+   
+   private transient PartitionWriter writer = null; // transient else error not serializable ; NB. ES Hadoop JacksonJsonGenerator uses org.codehaus.jackson.JsonGenerator
    private ObjectMapper mapper = new ObjectMapper(); // serializable
-   public EsForeachWriter(String esSettingsString, StructType schema, boolean keepOriginal, Log log) {
+   
+   public EsForeachWriter(String esSettingsString, StructType schema, boolean keepOriginal) {
       this.esSettingsString = esSettingsString;
       this.schema = schema;
-      this.log = log;
    }
+   
    @Override
    public void process(Row row) {
       if (writer == null) {
          Settings esSettings = new PropertiesSettings().load(this.esSettingsString);
-         writer = RestService.createWriter(esSettings, 0, -1, log); // TODO taskContext.partitionId ?
+         writer = RestService.createWriter(esSettings, 0, -1, esLog); // TODO taskContext.partitionId ?
       }
       //writer.repository.writeToIndex(row.getString(0)); // "{\"test\":\"es\"}"
       // NOT row else EsHadoopIllegalArgumentException: Spark SQL types are not handled through basic RDD saveToEs() calls; typically this is a mistake(as the SQL schema will be ignored). Use 'org.elasticsearch.spark.sql' package instead
@@ -65,10 +72,13 @@ public class EsForeachWriter extends ForeachWriter<Row> {
    }
    @Override
    public boolean open(long partitionId, long version) {
-      return true;
+      // TODO https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#using-foreach
+      return true; // do we need to write & process ? ex. not for already committed after partial failure
    }
    @Override
    public void close(Throwable errorOrNull) {
-      
+      if (errorOrNull != null) {
+         log.error("Error closing ES streaming writer", errorOrNull);
+      }
    }
 }

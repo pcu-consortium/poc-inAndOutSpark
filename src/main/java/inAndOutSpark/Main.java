@@ -49,7 +49,7 @@ import processors.Processors;
 public class Main {
    public static final String DURATION_PROP = "duration";
 
-   private static Logger log = LogManager.getLogger(Main.class); // TODO conf, in POM ; rather slf4j like pcu ? (or log4j like spark ES BUT logback preferred in pcu)
+   private static Logger log = LogManager.getLogger(Main.class); // on log4 like Spark ; TODO rather slf4j on logback like pcu ?
 
 	// Créer un objet properties
 	static Broadcast<Configuration> Bc;

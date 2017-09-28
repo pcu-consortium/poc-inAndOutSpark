@@ -1,8 +1,8 @@
 package inputOutput;
 
 import static org.apache.spark.sql.functions.col;
-import static org.apache.spark.sql.functions.struct;
 import static org.apache.spark.sql.functions.from_json;
+import static org.apache.spark.sql.functions.struct;
 
 import java.util.HashMap;
 
@@ -15,8 +15,6 @@ import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.DataStreamReader;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.elasticsearch.spark.sql.api.java.JavaEsSparkSQL;
 
@@ -31,8 +29,8 @@ import inAndOutSpark.Main;
  *
  */
 public class ReadInput {
-   
-   private static Logger log = LogManager.getLogger(ReadInput.class); // TODO conf, in POM ; rather slf4j like pcu ? (or log4j like spark ES BUT logback preferred in pcu)
+
+   private static Logger log = LogManager.getLogger(Main.class); // on log4 like Spark ; TODO rather slf4j on logback like pcu ?
 
 
 	/**
