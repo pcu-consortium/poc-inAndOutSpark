@@ -1,0 +1,18 @@
+---
+conf:
+#  kafka.bootstrap.servers: localhost:9092
+#  duration: 100
+in:
+  - 
+    nom: a
+    type: KAFKA_STREAM
+    topic: test
+#    startingOffsets: earliest
+
+out:
+  - 
+    nom: c
+    type: KAFKA_STREAM
+    topic: test1
+    from:
+     - a

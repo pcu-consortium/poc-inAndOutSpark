@@ -2,6 +2,7 @@ package config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import scala.Serializable;
 
@@ -15,6 +16,7 @@ import scala.Serializable;
  */
 public class Configuration implements Serializable {
 
+   private Properties conf;
 	List<Entree> in;
 	List<Sortie> out;
 	List<Operation> operations;
@@ -25,6 +27,13 @@ public class Configuration implements Serializable {
 		this.out = new ArrayList<Sortie>();
 		this.operations = new ArrayList<Operation>();
 	}
+
+   public Properties getConf() {
+      return conf;
+   }
+   public void setConf(Properties conf) {
+      this.conf = conf;
+   }
 
 	/**
 	 * @return

@@ -1,0 +1,58 @@
+[
+   {
+      "type": "record",
+      "name": "file",
+      "doc": "",
+      "fields": [
+         {"name":"type", "type":"string", "doc":""},/* TODO ENUM file ; or not in JSON ?? */
+         {"name":"id", "type":"string", "doc":""},
+         {"name":"version", "type":"long", "doc":""},
+         {"name":"version_global", "type":"long", "doc":""},
+         {"name":"synced", "type":"long", "logicalType": "timestamp-millis", "doc":""},
+         {"name":"file", "type":{
+            "type": "record",
+            "name": "file.file",
+            "doc": "",
+            "fields": [
+               {"name":"last_modified", "type":"long", "logicalType": "timestamp-millis", "doc":""},
+               {"name":"name", "type":"string", "doc":""},
+               {"name":"path", "type":"string", "doc":""}
+            ]
+         }},
+         {"name":"http", "type":{
+            "type": "record",
+            "name": "file.http",
+            "doc": "",
+            "fields": [
+               {"name":"url", "type":"string", "doc":""},
+               {"name":"mimetype", "type":"string", "doc":""}
+            ]
+         }},
+         {"name":"meta", "type":{
+            "type": "record",
+            "name": "file.meta",
+            "doc": "",
+            "fields": [
+               {"name":"author", "type":"string", "doc":""},
+               {"name":"title", "type":"string", "doc":""},
+               {"name":"date", "type":"long", "logicalType": "timestamp-millis", "doc":""},
+               {"name":"keywords", "type":{"type":"array", "items":"string", "doc":""}},
+               {"name":"language", "type":"string", "doc":""}
+            ]
+         }},
+         {"name":"content", "type":{
+            "type": "record",
+            "name": "file.content",
+            "doc": "",
+            "fields": [
+               {"name":"length", "type":"long", "doc":""},
+               {"name":"hash", "type":"string", "doc":""},
+               {"name":"store_path", "type":"string", "doc":""}
+            ]
+         }},
+         {"name":"fulltext", "type":"string", "doc":""},
+         {"name":"path", "type":"string", "doc":""},
+         {"name":"readable_path", "type":"string", "doc":""}
+      ]
+   }
+]

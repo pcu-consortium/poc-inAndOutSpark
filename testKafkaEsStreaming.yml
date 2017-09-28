@@ -1,0 +1,26 @@
+---
+conf:
+#  kafka.bootstrap.servers: localhost:9092
+#  es.nodes: localhost:9200
+#  duration: 100
+in:
+  - 
+    nom: a
+    type: KAFKA_STREAM
+    topic: test
+#    startingOffsets: earliest
+#    schema: file
+
+out:
+  - 
+    nom: c
+    type: ELASTICSEARCH
+    index: testlecture/test
+    from:
+     - a
+
+#operations:
+#  -
+#    input_source: a
+#    processors:
+#      - append test1 test2 resultAppend

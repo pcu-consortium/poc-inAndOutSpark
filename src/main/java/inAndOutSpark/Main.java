@@ -1,20 +1,28 @@
 package inAndOutSpark;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.avro.Schema;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.streaming.Duration;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -22,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import config.Configuration;
+import config.Entree;
 import config.Sortie;
 import config.TypeConnexion;
 import inputOutput.ReadInput;
@@ -38,18 +47,22 @@ import processors.Processors;
  */
 
 public class Main {
+   public static final String DURATION_PROP = "duration";
+
+   private static Logger log = LogManager.getLogger(Main.class); // TODO conf, in POM ; rather slf4j like pcu ? (or log4j like spark ES BUT logback preferred in pcu)
 
 	// Créer un objet properties
 	static Broadcast<Configuration> Bc;
 	static SparkConf sparkConf = null;
 	static JavaSparkContext jsc = null;
-	static SparkSession ss = null;
-	static LogManager logManager = new LogManager();
-	static Logger log = LogManager.getRootLogger();
+	public static SparkSession ss = null;
+	static JavaStreamingContext ssc = null;
 	static String inputFolder = "";
 	static String outputFolder = "";
 	static String confFile = "";
 	static String importFolder = "";
+	/** ms, default 500 (anyway, nothing happens unless data comes in) */
+	static long streamingDuration = 500;
 
 	/**
 	 * Méthode principale. Appelle les différentes étapes
@@ -63,37 +76,77 @@ public class Main {
 	 * @throws IllegalAccessException
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
+	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args)
 			throws JsonParseException, JsonMappingException, IOException, NoSuchMethodException, SecurityException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException {
 
 		// PostDo de Do de prédo
 		postDo(Do(preDo(args)));
 
+      if (ssc != null) { // there is at least one streaming input
+         ssc.awaitTermination();
+      }
 	}
 
 	/**
 	 * Initialise les différents éléments (sparkConf, JavaSparkContext)
 	 * 
-	 * @param args
+	 * @param args TODO eclipse
+	 * @param conf 
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	public static void init(String[] args) {
+	public static void init(String[] args, Configuration conf) {
 
 		try {
+         sparkConf = new SparkConf();
+
+         // defaults :
+         sparkConf.set("spark.app.name", "inAndOutSpark"); // OPT could use end of file name
+         //sparkConf.set("spark.master", "local"); // NOT in spark-submit mode, so provide it as (eclipse) args
+         sparkConf.set("kafka.bootstrap.servers", "localhost:9092"); // "host1:port1,host2:port2"
+         sparkConf.set("es.nodes", "localhost:9200");
+         
+         // override from conf :
+         if (conf.getConf() != null) {
+            for (Entry<Object, Object> entry : conf.getConf().entrySet()) {
+               sparkConf.set((String) entry.getKey(), (String) entry.getValue());
+            }
+		   }
+
+         // override from args :
+         ArrayList<String> nonPropArgList = new ArrayList<String>();
+		   for (int i = 3 ; i < args.length ; i++) {
+		      String[] sparkConfKeyValue = args[i].split("=", 1);
+		      if (sparkConfKeyValue.length == 2) {
+		         sparkConf.set(sparkConfKeyValue[0], sparkConfKeyValue[1]);
+		      } else {
+		         nonPropArgList.add(args[i]);
+		      }
+		   }
+         if (!nonPropArgList.isEmpty()) {
+            sparkConf.set("spark.master", nonPropArgList.get(0));
+         }
+         log.warn("Initialisation - using spark conf :\n" + sparkConf.toDebugString()
+               + "\nsome having been taken from other args :\n" + nonPropArgList);
+		   
 			// si on execute depuis eclipse
-			if (args.length >= 4)
+			/*if (args.length >= 4)
 				sparkConf = new SparkConf().setAppName("inAndOutSpark").setMaster(args[3]);
 			// si on execute en spark-submit
 			else
-				sparkConf = new SparkConf().setAppName("inAndOutSpark");
+				sparkConf = new SparkConf().setAppName("inAndOutSpark");*/
 
+         ///sparkConf.set("spark.driver.allowMultipleContexts", "true"); // NOO if streaming rather new JavaStreamingContext(sparkContext)
 			jsc = new JavaSparkContext(sparkConf);
 
 			ss = SparkSession.builder().getOrCreate();
+			
+			// Main props init :
+			if (sparkConf.contains(DURATION_PROP)) streamingDuration = Integer.parseInt(sparkConf.get(DURATION_PROP));
 
 			log.warn("Initialisation - Successful");
 		} catch (Exception e) {
@@ -107,19 +160,14 @@ public class Main {
 	 * Lit le fichier de conf et en créé un objet java
 	 * 
 	 * @param args
+	 * @return 
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	public static void readConf(String[] args) {
+	public static Configuration readConf(String[] args) {
 
 		try {
-			// Décommenter afin de demander le fichier de conf (pour le moment
-			// on
-			// file le fichier de conf en dur)
-			JavaPairRDD<String, String> conf;
-			JavaPairRDD<String, String> importInput;
-
 			if (args.length < 3) {
 				log.warn("Not enough parameters");
 				log.warn("USAGE : [Configuration file] [Input Folder] [Output Folder]");
@@ -129,24 +177,46 @@ public class Main {
 				outputFolder = args[2];
 			}
 
-			conf = jsc.wholeTextFiles(confFile);
+         String confString;
+			/*
+			JavaPairRDD<String, String> confRDD = jsc.wholeTextFiles(confFile);
+			confString = confRDD.values().first().toString();
+			*/
+			try (FileInputStream confFis = new FileInputStream(confFile)) {
+			   confString = IOUtils.toString(confFis);
+			}
 
 			// Création du mapper
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
 			// On crée l'objet config à envoyer en broadcast
-			Configuration c = mapper.readValue(conf.values().first().toString(), Configuration.class);
+			Configuration c = mapper.readValue(confString, Configuration.class);
+			
+			// schemas :
+			Files.list(Paths.get("avro")).map(p -> p.toFile()).filter(f -> f.getName().endsWith(".avsc")).filter(f -> f.isFile()).forEach(f -> {
+   	      try (InputStream avroSchemaResourceIs = new FileInputStream(f)) {
+   	         Schema schema = new Schema.Parser().parse(avroSchemaResourceIs);
+   	         fileSchemaMap.put(schema.getFullName(), schema);
+   	         for (Schema typeSchema : schema.getTypes()) {
+   	            typeSchemaMap.put(typeSchema.getName(), typeSchema); // TODO fullName
+   	         }
+   	      } catch (IOException ioex) {
+   	         log.error("Failed to load avro schema " + f.getAbsolutePath(), ioex);
+   	      }
+			});
+         log.warn("Loaded avro schemas " + typeSchemaMap.keySet());
 
 			// System.out.println(conf.first());
-			// On envoit l'objet en broadcast
-			Bc = jsc.broadcast(c);
 			log.warn("Read config - Succesful");
+			return c;
 		} catch (Exception e) {
 			log.warn("Read config - Unsuccessful");
-			e.printStackTrace();
+			throw new RuntimeException("Read config - Unsuccessful", e);
 		}
 
 	}
+   private static HashMap<String,Schema> fileSchemaMap = new HashMap<String,Schema>();
+   public static HashMap<String,Schema> typeSchemaMap = new HashMap<String,Schema>();
 
 	/**
 	 * Lit les données contenues dans les files/fichiers décrits dans le fichier
@@ -165,6 +235,7 @@ public class Main {
 
 			// Remplissage des dataframes
 			for (int i = 0; i < conf.getIn().size(); i++) {
+            Entree in = conf.getIn().get(i);
 				if (conf.getIn().get(i).getType().equals(TypeConnexion.FOLDER))
 					dfs.put(conf.getIn().get(i).getNom(),
 							ReadInput.readJSONFromFile(ss, inputFolder + conf.getIn().get(i).getNom() + "/*"));
@@ -177,10 +248,21 @@ public class Main {
 				else if (conf.getIn().get(i).getType().equals(TypeConnexion.ELASTICSEARCH))
 					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readDataFromElastic(ss,
 							conf.getIn().get(i).getIndex(), conf.getIn().get(i).getRequest()));
-				else
-					dfs.put(conf.getIn().get(i).getNom(), ReadInput.readJSONFromKafka(ss,
-							conf.getIn().get(i).getTopic(), conf.getIn().get(i).getIpBrokers()));
-				dfs.get(conf.getIn().get(i).getNom()).show(false);
+				else if (conf.getIn().get(i).getType().equals(TypeConnexion.KAFKA))
+					dfs.put(in.getNom(), ReadInput.readJSONFromKafka(ss,
+							in.getTopic(), in.getSchema(), false, null));
+				else { // KAFKA_STREAM
+				   if (ssc == null) {
+				      ///ssc = new JavaStreamingContext("local[*]", "inAndOut", new Duration(5000)); // NOO SparkException: Only one SparkContext may be running in this JVM (see SPARK-2243). To ignore this error, set spark.driver.allowMultipleContexts = true. The currently running SparkContext was created at:
+                  ssc = new JavaStreamingContext(jsc, new Duration(streamingDuration)); // TODO LATER several to allow different durations
+                  // or JavaSparkContext.fromSparkContext(sc) https://stackoverflow.com/questions/34879414/multiple-sparkcontext-detected-in-the-same-jvm
+				   }
+               dfs.put(in.getNom(), ReadInput.readJSONFromKafka(ss,
+                     in.getTopic(), in.getSchema(), true, in.getStartingOffsets()));
+				}
+				if (!conf.getIn().get(i).getType().equals(TypeConnexion.KAFKA_STREAM)) {
+				   dfs.get(conf.getIn().get(i).getNom()).show(false);
+				} // doesn't work in streaming
 
 			}
 
@@ -202,19 +284,23 @@ public class Main {
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
 	public static HashMap<String, Dataset<Row>> preDo(String[] args)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 
-		// Configuration du spark
-		init(args);
+      // On lit le fichier source et on le met dans UN String qu'on répartit
+      // sur tous les noeuds
+      Configuration conf = readConf(args);
 
-		// On lit le fichier source et on le met dans UN String qu'on répartit
-		// sur tous les noeuds
-		readConf(args);
+      // Configuration du spark
+      init(args, conf);
+      
+      // On envoit l'objet conf en broadcast
+      Bc = jsc.broadcast(conf);
 
-		// return readData();
-		return filter(readData());
+		HashMap<String, Dataset<Row>> readDataMap = readData();
+		return filter(readDataMap);
 	}
 
 	/**
@@ -387,16 +473,19 @@ public class Main {
 			Configuration conf = Bc.getValue();
 			for (Sortie sor : conf.getOut()) {
 				for (String str : sor.getFrom()) {
-					log.warn(str);
-					entrees.get(str).show();
+					log.debug("postDo from : " + str);
+					Dataset<Row> inDf = entrees.get(str);
+					if (!inDf.isStreaming()) {
+					   inDf.show();
+					} // else show doesn't work in streaming
 					if (conf.getOut().get(i).getType().equals(TypeConnexion.FILE))
-						WriteOutput.printToFs(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
-					else if (conf.getOut().get(i).getType().equals(TypeConnexion.KAFKA))
-						WriteOutput.printToKafka(entrees.get(str), conf.getOut().get(i).getTopic(), "");
+						WriteOutput.printToFs(inDf, outputFolder + sor.getNom() + "/" + str);
+					else if (conf.getOut().get(i).getType().equals(TypeConnexion.KAFKA) || conf.getOut().get(i).getType().equals(TypeConnexion.KAFKA_STREAM))
+						WriteOutput.printToKafka(inDf, conf.getOut().get(i).getTopic());
 					else if (conf.getOut().get(i).getType().equals(TypeConnexion.PARQUET))
-						WriteOutput.printParquetFile(entrees.get(str), outputFolder + sor.getNom() + "/" + str);
+						WriteOutput.printParquetFile(inDf, outputFolder + sor.getNom() + "/" + str);
 					else
-						WriteOutput.printToES(entrees.get(str), conf.getOut().get(i).getIndex());
+						WriteOutput.printToES(inDf, conf.getOut().get(i).getIndex(), conf.getOut().get(i).isKeepOriginal());
 				}
 				i++;
 			}

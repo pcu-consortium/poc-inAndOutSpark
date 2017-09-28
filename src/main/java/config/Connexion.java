@@ -7,13 +7,18 @@ import java.io.Serializable;
  *         les entrées et les sorties du spark
  */
 public abstract class Connexion implements Serializable {
-
-	String nom;
+   private static final long serialVersionUID = 6922437965138381068L;
+   
+   String nom;
 	TypeConnexion type;
 	Format format;
 	String ipBrokers;
 	String topic;
 	String index;
+	/** in KAFKA_STREAM only */
+   private String startingOffsets;
+   /** out ES only */
+   private boolean keepOriginal = true;
 
 	/**
 	 * @return
@@ -90,6 +95,20 @@ public abstract class Connexion implements Serializable {
 	public void setIndex(String index) {
 		this.index = index;
 	}
+
+   public String getStartingOffsets() {
+      return startingOffsets;
+   }
+   public void setStartingOffsets(String startingOffsets) {
+      this.startingOffsets = startingOffsets;
+   }
+
+   public boolean isKeepOriginal() {
+      return keepOriginal;
+   }
+   public void setKeepOriginal(boolean keepOriginal) {
+      this.keepOriginal = keepOriginal;
+   }
 
 	/**
 	 * Constructeur avec tous les champs de connexion

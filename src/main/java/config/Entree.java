@@ -7,9 +7,12 @@ package config;
  *
  */
 public class Entree extends Connexion {
-
-	Filtre filtreSQL;
+   private static final long serialVersionUID = -1584282893412810903L;
+   
+   Filtre filtreSQL;
 	String request;
+	/** required if streaming */
+   private String schema;
 
 	/**
 	 * 
@@ -55,6 +58,13 @@ public class Entree extends Connexion {
 	public void setRequest(String request) {
 		this.request = request;
 	}
+
+   public String getSchema() {
+      return this.schema;
+   }
+   public void setSchema(String schema) {
+      this.schema = schema;
+   }
 
 	/*
 	 * (non-Javadoc)

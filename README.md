@@ -32,6 +32,11 @@
 **Note 2 :** It is possible to monitor the execution of the job at http://IpOfSparkServer:4040 (only during the execution of the job).
 **Note 3 :** It is also possible to monitor the jobs at http://IpOfSparkServer:8080.
 
+The Spark server used and other [Spark parameters](https://spark.apache.org/docs/latest/configuration.html#available-properties)
+can also be configured below the "conf" top-level configuration block :
+spark.master, spark.app.name, spark.driver.memory...
+as well as global parameters : duration (of streaming window), Kafka's & ElasticSearch's.
+
 ## Example incoming data
 
 - file [aExample](aExample)
@@ -94,16 +99,25 @@ For instance, for example [testKafka.yml](testKafka.yml) :
 bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic1
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic2
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test1
 bin/kafka-topics.sh --list --zookeeper localhost:2181
 
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic1
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic2 --from-beginning
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test1 --from-beginning
 ````
 - then write some JSON in producer
 - and run Main.main() in Eclipse with these arguments : testKafka.yml ./ ./ local
 - => producer's JSON should appear in the consumer
+
+The Kafka server used and other [client parameters](https://spark.apache.org/docs/2.1.0/structured-streaming-kafka-integration.html)
+can be configured below the "conf" top-level configuration block :
+kafka.bootstrap.servers, kafkaConsumer.pollTimeoutMs...
+
+The "value" Kafka field is parsed as JSON in batch mode (even without explicit schema,
+allows model emergence) or according to the provided explicit schema if any.
+Other Kafka fields (key, timestamp...) are available to operations under a "kafka"
+struct column (ex. kafka.key).
 
 ## How to start ElasticSearch for examples that require it
 For instance, for example [confIndexing.yml](confIndexing.yml) :
@@ -113,6 +127,13 @@ For instance, for example [confIndexing.yml](confIndexing.yml) :
 bin/elasticsearch
 ````
 
+The ElasticSearch server used and other [client parameters](https://www.elastic.co/guide/en/elasticsearch/hadoop/current/configuration.html)
+can be configured below the "conf" top-level configuration block :
+es.nodes, es.query, es.net.http.auth.user/pass...
+
+In streaming mode, an explicit schema is required to read streaming sources. However,
+values of fields that are not in this schema will also be written in ElasticSearch
+if its "keepOriginal" entry parameter is true, allowing for model emergence.
 
 
 # Composition of the configuration file
@@ -136,10 +157,11 @@ Each entries has :
 | OPTIONAL | filtreSQL | all | Simple SQL request to execute on the flow |
 | DEPRECATED | select | all | Execute a select on the flow |
 | DEPRECATED | where | all | Execute a where on the flow |
-| REQUIRED | ipBrokers | Kafka | List of the kafka brokers separated with a comma
 | REQUIRED | topic | Kafka | Topic to subscribe to |
 | REQUIRED | index | ElasticSearch | Index/type to send the request | 
 | OPTIONAL | request | ElasticSearch | Request to apply on the data |
+| OPTIONAL | schema | Kafka | Name of the Avro schema below the avro/ dir. Required in "in" streaming mode to parse the "value" Kafka field as JSON |
+| OPTIONAL | startingOffsets | Kafka in | to read from |
 
 
 **Note :** If the field "select" or "where" are specified, the field "filtreSQL" is not taken into account.
@@ -186,7 +208,8 @@ Each output possess :
 | REQUIRED | nom | File | Name of the ouput flow. Give its name to the folder with the output data |
 | REQUIRED | type | all | Type of the output flow (kafka or file). For the moment only file is supported |
 | OPTIONAL | from | all | List of flow that have to be written on this output. The elements of the list give their names to the sub-folder with the output data in |
-| REQUIRED | index | elastic | `index/type` where to put the data
+| REQUIRED | index | ElasticSearch | `index/type` where to put the data
+| OPTIONAL | keepOriginal | ElasticSearch out | whether to output to ES even original fields not in the explicit schema in streaming mode | 
 
 **Note :** For an example output, see : [output format]( https://github.com/pcu-consortium/poc-inAndOutSpark/blob/master/README.md#expected-output "Output format" )
 

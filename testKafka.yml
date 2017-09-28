@@ -3,13 +3,12 @@ in:
   - 
     nom: a
     type: KAFKA
-    ipBrokers: localhost:9092
-    topic: topic1
+    topic: test
 
 out:
   - 
     nom: c
     type: KAFKA
-    topic: topic2
+    topic: test1
     from:
      - a
